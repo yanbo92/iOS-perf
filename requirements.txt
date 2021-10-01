@@ -1,0 +1,5 @@
+py_ios_device==2.1.8
+tidevice==0.4.14
+PyMySQL==1.0.2
+jsonpath==0.82
+requests==2.25.1
