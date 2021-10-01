@@ -1,0 +1,19 @@
+version: '3.5'
+
+services:
+  grafana_cn:
+    image: grafana/grafana:6.7.4
+    restart: always
+    links:
+      - perf_database:db
+    ports:
+      - "30000:3000"
+
+  perf_database:
+    image: biarms/mysql:5.7
+    environment:
+      MYSQL_DATABASE: test
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "33006:3306"
+    restart: always
