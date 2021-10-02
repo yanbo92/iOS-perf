@@ -56,7 +56,7 @@ def get_current_panels():
         'Accept': 'application/json',
         'Content-Type': 'application/json',
     }
-    response = requests.get('http://admin:admin@localhost:30000/api/dashboards/uid/HpA728Hnk', headers=headers)
+    response = requests.get('http://admin:admin@localhost:30000/api/dashboards/uid/4C28nWDnk', headers=headers)
     pprint(response.text)
     jsonobj = json.loads(response.text)
     panels = jsonpath.jsonpath(jsonobj, "$..panels")[0]
@@ -69,6 +69,8 @@ def get_current_panels():
 
 
 def post_json(table_name):
+    panels, max_id, title_list = get_current_panels()
+
     panels_list = [
         {'aliasColors': {}, 'bars': False, 'dashLength': 10, 'dashes': False, 'datasource': 'MySQL', 'fill': 1,
          'fillGradient': 0, 'gridPos': {'h': 8, 'w': 12, 'x': 0, 'y': 0}, 'hiddenSeries': False, 'id': 8,
@@ -171,6 +173,6 @@ def post_json(table_name):
 
 
 if __name__ == "__main__":
-    # grafana_url = post_json('92b2_0928_2228')
+    grafana_url = post_json('92b2_0928_2228')
     # webbrowser.open(grafana_url)
-    set_anonymous()
+    # set_anonymous()
