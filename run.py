@@ -15,6 +15,7 @@ import pymysql.cursors
 import requests
 import tidevice
 from ios_device import py_ios_device
+import gradio as gr
 
 
 fps_sql_prefix = ""
@@ -296,8 +297,8 @@ if __name__ == "__main__":
     print("wait for mysql setup")
     # time.sleep(10)
     parser = argparse.ArgumentParser()
-    parser.add_argument("--udid", type=str, required=True)
-    parser.add_argument("--bundleid", type=str, required=True)
+    parser.add_argument("--udid", type=str, required=False, default="")
+    parser.add_argument("--bundleid", type=str, required=False, default="com.insta360.oner")
     parser.add_argument("--grafana_host", type=str, required=False, default="localhost")
     parser.add_argument("--mysql_host", type=str, required=False, default="localhost")
     parser.add_argument("--grafana_port", type=str, required=False, default="30000")
@@ -308,6 +309,9 @@ if __name__ == "__main__":
     parser.add_argument("--mysql_password", type=str, required=False, default="admin")
     parser.add_argument("--mysql_db", type=str, required=False, default="test")
     args = parser.parse_args()
+    print("Parameters list:")
+    for arg in vars(args):
+        print(arg, getattr(args, arg))
 
     app_bundle_id = args.bundleid  # 测试iOS应用包名
     device_id = args.udid  # 测试设备ID
