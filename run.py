@@ -92,8 +92,8 @@ def grafana_setup(table_name):
          'options': {'dataLinks': []}, 'percentage': False, 'pointradius': 2, 'points': False, 'renderer': 'flot',
          'seriesOverrides': [], 'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
             {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-             'rawSql': 'SELECT\n  $__timeGroupAlias(time,10s),\n  avg(memory) AS "MEM"\nFROM my_memory_{}\nWHERE\n '
-                       ' $__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,10s)'.format(table_name),
+             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(memory) AS "MEM"\nFROM my_memory_{}\nWHERE\n '
+                       ' $__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(table_name),
              'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
              'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [], 'timeFrom': None,
          'timeRegions': [], 'timeShift': None, 'title': 'MEM',
@@ -109,8 +109,8 @@ def grafana_setup(table_name):
          'options': {'dataLinks': []}, 'percentage': False, 'pointradius': 2, 'points': False, 'renderer': 'flot',
          'seriesOverrides': [], 'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
             {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-             'rawSql': 'SELECT\n  $__timeGroupAlias(time,10s),\n  avg(fps) AS "FPS"\nFROM my_fps_{}\nWHERE\n '
-                       ' $__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,10s)'.format(table_name),
+             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(fps) AS "FPS"\nFROM my_fps_{}\nWHERE\n '
+                       ' $__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(table_name),
              'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
              'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [], 'timeFrom': None,
          'timeRegions': [], 'timeShift': None, 'title': 'FPS',
@@ -126,8 +126,8 @@ def grafana_setup(table_name):
          'options': {'dataLinks': []}, 'percentage': False, 'pointradius': 2, 'points': False, 'renderer': 'flot',
          'seriesOverrides': [], 'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
             {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-             'rawSql': 'SELECT\n  $__timeGroupAlias(time,10s),\n  avg(gpu_Device) AS "GPU"\nFROM my_gpu_{}\nWHERE\n '
-                       ' $__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,10s)'.format(table_name),
+             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Device) AS "GPU"\nFROM my_gpu_{}\nWHERE\n '
+                       ' $__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(table_name),
              'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
              'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [], 'timeFrom': None,
          'timeRegions': [], 'timeShift': None, 'title': 'GPU',
@@ -143,8 +143,8 @@ def grafana_setup(table_name):
          'options': {'dataLinks': []}, 'percentage': False, 'pointradius': 2, 'points': False, 'renderer': 'flot',
          'seriesOverrides': [], 'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
             {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-             'rawSql': 'SELECT\n  $__timeGroupAlias(time,10s),\n  avg(use_cpu) AS "CPU"\nFROM my_cpu_{}\nWHERE\n  '
-                       '$__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,10s)'.format(table_name),
+             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(use_cpu) AS "CPU"\nFROM my_cpu_{}\nWHERE\n  '
+                       '$__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(table_name),
              'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
              'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [], 'timeFrom': None,
          'timeRegions': [], 'timeShift': None, 'title': 'CPU',
@@ -325,7 +325,7 @@ if __name__ == "__main__":
     mysql_password = args.mysql_password
     mysql_db = args.mysql_db
 
-    table_name = device_id[-4:] + "_" + datetime.datetime.now().strftime("%m%d_%H%M")
+    table_name = tidevice.Device(device_id).name + "_" + datetime.datetime.now().strftime("%m%d_%H%M")
     db_init(table_name)
     grafana_setup(table_name)
     start_test()
