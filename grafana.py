@@ -37,6 +37,45 @@ class Grafana:
         value = info_line.split("{}:".format(name))[1]
         result.close()
         return value.replace(" ", "")
+
+    def set_anonymous(self):
+        # useless cos this API needs grafana v8.0 +
+        base_url = 'http://{}:{}@{}:{}/api/'.format(self.grafana_username, self.grafana_password, self.grafana_host,
+                                                    self.grafana_port)
+        url = base_url + 'admin/settings'
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+        body = {
+            "updates": {
+                "auth.anonymous": {"enabled": "true", "org_name": "Main Org.", "org_role": "Viewer"}
+            }
+        }
+        response = requests.put(url=url, data=body, headers=headers)
+        # response = requests.get(url)
+        if response.status_code == 200:
+            print("set anonymous success")
+            print("return : \n" + str(response.content.decode()))
+        else:
+            print("Error Code：" + str(response.status_code))
+            print("Error Message: \n" + str(response.content.decode()))
+
+    def get_current_panels(self, uid):
+        # 从当前的grafana上获取panel对象
+        # 参数为dashboaard的uid，从ui中获取
+        headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+        base_url = 'http://{}:{}@{}:{}/api/'.format(self.grafana_username, self.grafana_password, self.grafana_host,
+                                                    self.grafana_port)
+        url = base_url + 'dashboards/uid/{}'.format(uid)
+        response = requests.get(base_url, headers=headers)
+        pprint(response.text)
+        jsonobj = json.loads(response.text)
+        panels = jsonpath.jsonpath(jsonobj, "$..panels")[0]
+        return panels
     
     def add_mysql_source(self):
         base_url = 'http://{}:{}@{}:{}/api/'.format(self.grafana_username, self.grafana_password, self.grafana_host,
