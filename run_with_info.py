@@ -15,6 +15,7 @@ import argparse
 import pymysql.cursors
 import requests
 import tidevice
+from grafana import Grafana
 from ios_device import py_ios_device
 
 
@@ -25,7 +26,10 @@ mem_sql_prefix = ""
 
 
 def get_device_info(name):
-    cmd = "tidevice info | grep {}".format(name)
+    if device_id == "":
+        cmd = "tidevice info | grep {}".format(name)
+    else:
+        cmd = "tidevice -u {} info | grep {}".format(device_id, name)
     result = os.popen(cmd)
     # 返回的结果是一个<class 'os._wrap_close'>对象，需要读取后才能处理
     context = result.read()
@@ -342,6 +346,7 @@ def start_test():
 
 
 if __name__ == "__main__":
+
     print("wait for mysql setup")
     # time.sleep(10)
     parser = argparse.ArgumentParser()
@@ -374,6 +379,12 @@ if __name__ == "__main__":
     mysql_db = args.mysql_db
 
     table_name = tidevice.Device(device_id).name + "_" + datetime.datetime.now().strftime("%m%d_%H%M")
+
+    grafana = Grafana(grafana_host, grafana_port, grafana_username, grafana_password, mysql_host, mysql_port,
+                      mysql_username, mysql_password, mysql_db, table_name, device_id)
+    grafana.add_mysql_source()
+    grafana.setup_dashboard()
+    grafana.to_explorer()
     db_init(table_name)
-    grafana_setup(table_name)
+    # grafana_setup(table_name)
     start_test()
