@@ -55,10 +55,13 @@
 
 #### 必须参数
 
-如果在本机直接运行Docker，可以只传这两个参数，其他均默认
+如果在本机直接运行Docker，且电脑只连接一台手机，可以只传bundleid这个参数，其他均默认
 
-> - --udid iPhone：手机的唯一标识符，通过 `idevice_id -l` 获取
 > - --bundleid：待测APP的包名，通过`ideviceinstaller -l`获取
+
+#### udid 可选
+
+>- --udid iPhone：手机的唯一标识符，通过 `idevice_id -l` 获取，客户端只连接一台手机时不用写
 
 
 
