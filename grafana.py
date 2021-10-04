@@ -105,6 +105,170 @@ class Grafana:
                 print("Error Message: \n" + str(response.content.decode()))
 
     def setup_dashboard(self):
+        panels_list_old = [{'cacheTimeout': None,
+                        'content': '\n# INFO\n\nMarketName:       {}\n\nDeviceName:   '
+                                   '    {}\n\nProductVersion:   {}\n\n'
+                                   'ProductType:      {}\n\nModelNumber:      {}\n\nSerialNumber:     {}'
+                                   '\n\nPhoneNumber:      {}\n\nCPUArchitecture:  {}\n\nProductName:      '
+                                   '{}\n\nProtocolVersion:  {}\n\nRegionInfo:       {}\n\nTimeIntervalSince1970: '
+                                   '{}\n\nTimeZone:         {}\n\nUniqueDeviceID:   '
+                                   '{}\n\nWiFiAddress:      {}\n\n'
+                                   'BluetoothAddress: {}\n\nBasebandVersion:  {}\n\n\n\n'.format(
+                            self.get_device_info("MarketName"),
+                            self.get_device_info("DeviceName"),
+                            self.get_device_info("ProductVersion"),
+                            self.get_device_info("ProductType"),
+                            self.get_device_info("ModelNumber"),
+                            self.get_device_info("SerialNumber"),
+                            self.get_device_info("PhoneNumber"),
+                            self.get_device_info(
+                                "CPUArchitecture"),
+                            self.get_device_info("ProductName"),
+                            self.get_device_info(
+                                "ProtocolVersion"),
+                            self.get_device_info("RegionInfo"),
+                            self.get_device_info(
+                                "TimeIntervalSince1970"),
+                            self.get_device_info("TimeZone"),
+                            self.get_device_info("UniqueDeviceID"),
+                            self.get_device_info("WiFiAddress"),
+                            self.get_device_info(
+                                "BluetoothAddress"),
+                            self.get_device_info(
+                                "BasebandVersion")),
+                        'datasource': 'MySQL', 'gridPos': {'h': 24, 'w': 5, 'x': 0, 'y': 0}, 'id': 10, 'links': [],
+                        'mode': 'markdown', 'pluginVersion': '6.7.4', 'targets': [
+                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': False,
+                 'rawSql': 'SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n '
+                           ' <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER'
+                           ' BY <time_column> ASC\n',
+                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
+                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'timeFrom': None,
+                        'timeShift': None, 'title': 'INFO', 'type': 'text'},
+                       {'aliasColors': {}, 'bars': False, 'dashLength': 10, 'dashes': False, 'datasource': 'MySQL',
+                        'fill': 1, 'fillGradient': 0, 'gridPos': {'h': 6, 'w': 17, 'x': 6, 'y': 0},
+                        'hiddenSeries': False, 'id': 8,
+                        'legend': {'avg': False, 'current': False, 'max': False, 'min': False, 'show': True,
+                                   'total': False, 'values': False}, 'lines': True, 'linewidth': 1,
+                        'nullPointMode': 'null', 'options': {'dataLinks': []}, 'percentage': False,
+                        'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
+                        'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(memory) AS "MEM"\n'
+                                      'FROM my_memory_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY'
+                                      ' $__timeGroup(time,3s)'.format(self.table_name),
+                            'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
+                            'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
+                        'timeFrom': None, 'timeRegions': [], 'timeShift': None, 'title': 'MEM',
+                        'tooltip': {'shared': True, 'sort': 0, 'value_type': 'individual'}, 'type': 'graph',
+                        'xaxis': {'buckets': None, 'mode': 'time', 'name': None, 'show': True, 'values': []},
+                        'yaxes': [{'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None,
+                                   'show': True},
+                                  {'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None,
+                                   'show': True}], 'yaxis': {'align': False, 'alignLevel': None}},
+                       {'aliasColors': {}, 'bars': False, 'dashLength': 10, 'dashes': False, 'datasource': 'MySQL',
+                        'fill': 1, 'fillGradient': 0, 'gridPos': {'h': 6, 'w': 17, 'x': 6, 'y': 6},
+                        'hiddenSeries': False, 'id': 4,
+                        'legend': {'avg': False, 'current': False, 'max': False, 'min': False, 'show': True,
+                                   'total': False, 'values': False}, 'lines': True, 'linewidth': 1,
+                        'nullPointMode': 'null', 'options': {'dataLinks': []}, 'percentage': False,
+                        'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
+                        'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(use_cpu) AS "CPU"\nFROM '
+                                      'my_cpu_{}\nWHERE\n $__timeFilter(time)\nGROUP BY 1\nORDER BY'
+                                      ' $__timeGroup(time,3s)'.format(self.table_name),
+                            'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
+                            'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
+                        'timeFrom': None, 'timeRegions': [], 'timeShift': None, 'title': 'CPU',
+                        'tooltip': {'shared': True, 'sort': 0, 'value_type': 'individual'}, 'type': 'graph',
+                        'xaxis': {'buckets': None, 'mode': 'time', 'name': None, 'show': True, 'values': []},
+                        'yaxes': [{'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None,
+                                   'show': True},
+                                  {'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None,
+                                   'show': True}], 'yaxis': {'align': False, 'alignLevel': None}},
+                       {'aliasColors': {}, 'bars': False, 'dashLength': 10, 'dashes': False, 'datasource': 'MySQL',
+                        'fill': 1, 'fillGradient': 0, 'gridPos': {'h': 6, 'w': 17, 'x': 6, 'y': 12},
+                        'hiddenSeries': False, 'id': 2,
+                        'legend': {'avg': False, 'current': False, 'max': False, 'min': False, 'show': True,
+                                   'total': False, 'values': False}, 'lines': True, 'linewidth': 1,
+                        'nullPointMode': 'null', 'options': {'dataLinks': []}, 'percentage': False,
+                        'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
+                        'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Device) AS "GPU"\nFROM '
+                                      'my_gpu_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY '
+                                      '$__timeGroup(time,3s)'.format(self.table_name),
+                            'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
+                            'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Renderer) AS '
+                                      '"GPU_Renderer"\nFROM my_gpu_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY'
+                                      ' 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                            'refId': 'B', 'select': [[{'params': ['value'], 'type': 'column'}]],
+                            'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Tiler) AS '
+                                      '"GPU_TILER"\nFROM my_gpu_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY '
+                                      '1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                            'refId': 'C', 'select': [[{'params': ['value'], 'type': 'column'}]],
+                            'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
+                        'timeFrom': None, 'timeRegions': [], 'timeShift': None, 'title': 'GPU',
+                        'tooltip': {'shared': True, 'sort': 0, 'value_type': 'individual'}, 'type': 'graph',
+                        'xaxis': {'buckets': None, 'mode': 'time', 'name': None, 'show': True, 'values': []},
+                        'yaxes': [{'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None,
+                                   'show': True},
+                                  {'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None,
+                                   'show': True}], 'yaxis': {'align': False, 'alignLevel': None}},
+                       {'aliasColors': {}, 'bars': False, 'dashLength': 10, 'dashes': False, 'datasource': 'MySQL',
+                        'fill': 1, 'fillGradient': 0, 'gridPos': {'h': 6, 'w': 17, 'x': 6, 'y': 18},
+                        'hiddenSeries': False, 'id': 6,
+                        'legend': {'avg': False, 'current': False, 'max': False, 'min': False, 'show': True,
+                                   'total': False, 'values': False}, 'lines': True, 'linewidth': 1,
+                        'nullPointMode': 'null', 'options': {'dataLinks': []}, 'percentage': False,
+                        'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
+                        'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(fps) AS "FPS"\nFROM'
+                                      ' my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY '
+                                      '$__timeGroup(time,3s)'.format(self.table_name),
+                            'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
+                            'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(jank) AS "JANK"\nFROM '
+                                      'my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY'
+                                      ' $__timeGroup(time,3s)'.format(self.table_name),
+                            'refId': 'B', 'select': [[{'params': ['value'], 'type': 'column'}]],
+                            'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(big_jank) AS '
+                                      '"BIG_JANK"\nFROM my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY '
+                                      '1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                            'refId': 'C', 'select': [[{'params': ['value'], 'type': 'column'}]],
+                            'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(stutter) AS '
+                                      '"STUTTER"\nFROM my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY'
+                                      ' 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                            'refId': 'D', 'select': [[{'params': ['value'], 'type': 'column'}]],
+                            'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
+                        'timeFrom': None, 'timeRegions': [], 'timeShift': None, 'title': 'FPS',
+                        'tooltip': {'shared': True, 'sort': 0, 'value_type': 'individual'}, 'type': 'graph',
+                        'xaxis': {'buckets': None, 'mode': 'time', 'name': None, 'show': True, 'values': []},
+                        'yaxes': [{'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None,
+                                   'show': True},
+                                  {'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None,
+                                   'show': True}], 'yaxis': {'align': False, 'alignLevel': None}}]
+
         panels_list = [{'cacheTimeout': None,
                             'content': '\n# INFO\n\nMarketName:       {}\n\nDeviceName:   '
                                        '    {}\n\nProductVersion:   {}\n\n'
@@ -114,34 +278,32 @@ class Grafana:
                                        '{}\n\nTimeZone:         {}\n\nUniqueDeviceID:   '
                                        '{}\n\nWiFiAddress:      {}\n\n'
                                        'BluetoothAddress: {}\n\nBasebandVersion:  {}\n\n\n\n'.format(
-                                                                                self.get_device_info("MarketName"),
-                                                                                self.get_device_info("DeviceName"),
-                                                                                self.get_device_info("ProductVersion"),
-                                                                                self.get_device_info("ProductType"),
-                                                                                self.get_device_info("ModelNumber"),
-                                                                                self.get_device_info("SerialNumber"),
-                                                                                self.get_device_info("PhoneNumber"),
-                                                                                self.get_device_info(
-                                                                                    "CPUArchitecture"),
-                                                                                self.get_device_info("ProductName"),
-                                                                                self.get_device_info(
-                                                                                    "ProtocolVersion"),
-                                                                                self.get_device_info("RegionInfo"),
-                                                                                self.get_device_info(
-                                                                                    "TimeIntervalSince1970"),
-                                                                                self.get_device_info("TimeZone"),
-                                                                                self.get_device_info("UniqueDeviceID"),
-                                                                                self.get_device_info("WiFiAddress"),
-                                                                                self.get_device_info(
-                                                                                    "BluetoothAddress"),
-                                                                                self.get_device_info(
-                                                                                    "BasebandVersion")),
+                                self.get_device_info("MarketName"),
+                                self.get_device_info("DeviceName"),
+                                self.get_device_info("ProductVersion"),
+                                self.get_device_info("ProductType"),
+                                self.get_device_info("ModelNumber"),
+                                self.get_device_info("SerialNumber"),
+                                self.get_device_info("PhoneNumber"),
+                                self.get_device_info(
+                                    "CPUArchitecture"),
+                                self.get_device_info("ProductName"),
+                                self.get_device_info(
+                                    "ProtocolVersion"),
+                                self.get_device_info("RegionInfo"),
+                                self.get_device_info(
+                                    "TimeIntervalSince1970"),
+                                self.get_device_info("TimeZone"),
+                                self.get_device_info("UniqueDeviceID"),
+                                self.get_device_info("WiFiAddress"),
+                                self.get_device_info(
+                                    "BluetoothAddress"),
+                                self.get_device_info(
+                                    "BasebandVersion")),
                             'datasource': 'MySQL', 'gridPos': {'h': 24, 'w': 5, 'x': 0, 'y': 0}, 'id': 10, 'links': [],
                             'mode': 'markdown', 'pluginVersion': '6.7.4', 'targets': [
                 {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': False,
-                 'rawSql': 'SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n '
-                           ' <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER'
-                           ' BY <time_column> ASC\n',
+                 'rawSql': 'SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n  <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER BY <time_column> ASC\n'.format(self.table_name),
                  'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
                  'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'timeFrom': None,
                             'timeShift': None, 'title': 'INFO', 'type': 'text'},
@@ -154,9 +316,7 @@ class Grafana:
                             'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
                             'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(memory) AS "MEM"\n'
-                                          'FROM my_memory_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY'
-                                          ' $__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(memory) AS "MEM"\nFROM MEM\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
                                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -176,9 +336,7 @@ class Grafana:
                             'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
                             'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(use_cpu) AS "CPU"\nFROM '
-                                          'my_cpu_{}\nWHERE\n $__timeFilter(time)\nGROUP BY 1\nORDER BY'
-                                          ' $__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(use_cpu) AS "USE_CPU"\nFROM CPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
                                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -197,24 +355,23 @@ class Grafana:
                             'nullPointMode': 'null', 'options': {'dataLinks': []}, 'percentage': False,
                             'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
                             'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
+                               {'format': 'time_series', 'group': [{'params': ['1s', 'none'], 'type': 'time'}],
+                                'metricColumn': 'none', 'rawQuery': True,
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(gpu_Device) AS "GPU_Device"\nFROM GPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
+                                'refId': 'A', 'select': [[{'params': ['gpu_Device'], 'type': 'column'},
+                                                          {'params': ['avg'], 'type': 'aggregate'},
+                                                          {'params': ['gpu_Device'], 'type': 'alias'}]], 'table': 'GPU',
+                                'timeColumn': 'time', 'timeColumnType': 'timestamp',
+                                'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'},
+                                          {'datatype': 'varchar', 'name': '',
+                                           'params': ['runid', '=', "'{}'".format(self.table_name)], 'type': 'expression'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Device) AS "GPU"\nFROM '
-                                          'my_gpu_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY '
-                                          '$__timeGroup(time,3s)'.format(self.table_name),
-                                'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
-                                'timeColumn': 'time',
-                                'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
-                               {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Renderer) AS '
-                                          '"GPU_Renderer"\nFROM my_gpu_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY'
-                                          ' 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Renderer) AS "GPU_Renderer"\nFROM GPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
                                 'refId': 'B', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Tiler) AS '
-                                          '"GPU_TILER"\nFROM my_gpu_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY '
-                                          '1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Tiler) AS "GPU_Tiler"\nFROM GPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
                                 'refId': 'C', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -234,30 +391,22 @@ class Grafana:
                             'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
                             'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(fps) AS "FPS"\nFROM'
-                                          ' my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY '
-                                          '$__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(fps) AS "FPS"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
                                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(jank) AS "JANK"\nFROM '
-                                          'my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY'
-                                          ' $__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(jank) AS "Jank"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
                                 'refId': 'B', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(big_jank) AS '
-                                          '"BIG_JANK"\nFROM my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY '
-                                          '1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(big_jank) AS "Big_Jank"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
                                 'refId': 'C', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(stutter) AS '
-                                          '"STUTTER"\nFROM my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY'
-                                          ' 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(stutter) AS "Stutter"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
                                 'refId': 'D', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -268,117 +417,6 @@ class Grafana:
                                        'show': True},
                                       {'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None,
                                        'show': True}], 'yaxis': {'align': False, 'alignLevel': None}}]
-
-        panels_list_new = [
-            {'cacheTimeout': None,
-             'content': '\n# INFO\n\nMarketName:       {}\n\nDeviceName:       {}\n\nProductVersion:   {}\n\n'
-                        'ProductType:      {}\n\nModelNumber:      {}\n\nSerialNumber:     {}'
-                        '\n\nPhoneNumber:      {}\n\nCPUArchitecture:  {}\n\nProductName:      '
-                        '{}\n\nProtocolVersion:  {}\n\nRegionInfo:       {}\n\nTimeIntervalSince1970: '
-                        '{}\n\nTimeZone:         {}\n\nUniqueDeviceID:   '
-                        '{}\n\nWiFiAddress:      {}\n\n'
-                        'BluetoothAddress: {}\n\nBasebandVersion:  {}\n\n\n\n'.format(
-                 self.get_device_info("MarketName"),
-                 self.get_device_info("DeviceName"),
-                 self.get_device_info("ProductVersion"),
-                 self.get_device_info("ProductType"),
-                 self.get_device_info("ModelNumber"),
-                 self.get_device_info("SerialNumber"),
-                 self.get_device_info("PhoneNumber"),
-                 self.get_device_info(
-                     "CPUArchitecture"),
-                 self.get_device_info("ProductName"),
-                 self.get_device_info(
-                     "ProtocolVersion"),
-                 self.get_device_info("RegionInfo"),
-                 self.get_device_info(
-                     "TimeIntervalSince1970"),
-                 self.get_device_info("TimeZone"),
-                 self.get_device_info("UniqueDeviceID"),
-                 self.get_device_info("WiFiAddress"),
-                 self.get_device_info(
-                     "BluetoothAddress"),
-                 self.get_device_info(
-                     "BasebandVersion")),
-             'datasource': 'MySQL', 'gridPos': {'h': 24, 'w': 5, 'x': 0, 'y': 0}, 'id': 10, 'links': [],
-             'mode': 'markdown', 'pluginVersion': '6.7.4', 'targets': [
-                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': False,
-                 'rawSql': 'SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n '
-                           ' <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER'
-                           ' BY <time_column> ASC\n',
-                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
-                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'timeFrom': None,
-             'timeShift': None,
-             'title': 'INFO', 'type': 'text'},
-            {'aliasColors': {}, 'bars': False, 'dashLength': 10, 'dashes': False, 'datasource': 'MySQL', 'fill': 1,
-             'fillGradient': 0, 'gridPos': {'h': 6, 'w': 17, 'x': 6, 'y': 0}, 'hiddenSeries': False, 'id': 8,
-             'legend': {'avg': False, 'current': False, 'max': False, 'min': False, 'show': True, 'total': False,
-                        'values': False}, 'lines': True, 'linewidth': 1, 'nullPointMode': 'null',
-             'options': {'dataLinks': []}, 'percentage': False, 'pointradius': 2, 'points': False, 'renderer': 'flot',
-             'seriesOverrides': [], 'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
-                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                 'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(memory) AS "MEM"\nFROM my_memory_{}\nWHERE\n '
-                           ' $__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
-                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
-                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
-             'timeFrom': None, 'timeRegions': [], 'timeShift': None, 'title': 'MEM',
-             'tooltip': {'shared': True, 'sort': 0, 'value_type': 'individual'}, 'type': 'graph',
-             'xaxis': {'buckets': None, 'mode': 'time', 'name': None, 'show': True, 'values': []},
-             'yaxes': [{'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None, 'show': True},
-                       {'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None, 'show': True}],
-             'yaxis': {'align': False, 'alignLevel': None}},
-            {'aliasColors': {}, 'bars': False, 'dashLength': 10, 'dashes': False, 'datasource': 'MySQL', 'fill': 1,
-             'fillGradient': 0, 'gridPos': {'h': 6, 'w': 17, 'x': 6, 'y': 6}, 'hiddenSeries': False, 'id': 4,
-             'legend': {'avg': False, 'current': False, 'max': False, 'min': False, 'show': True, 'total': False,
-                        'values': False}, 'lines': True, 'linewidth': 1, 'nullPointMode': 'null',
-             'options': {'dataLinks': []}, 'percentage': False, 'pointradius': 2, 'points': False, 'renderer': 'flot',
-             'seriesOverrides': [], 'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
-                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                 'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(use_cpu) AS "CPU"\nFROM my_cpu_{}\nWHERE\n  '
-                           '$__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
-                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
-                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
-             'timeFrom': None, 'timeRegions': [], 'timeShift': None, 'title': 'CPU',
-             'tooltip': {'shared': True, 'sort': 0, 'value_type': 'individual'}, 'type': 'graph',
-             'xaxis': {'buckets': None, 'mode': 'time', 'name': None, 'show': True, 'values': []},
-             'yaxes': [{'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None, 'show': True},
-                       {'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None, 'show': True}],
-             'yaxis': {'align': False, 'alignLevel': None}},
-            {'aliasColors': {}, 'bars': False, 'dashLength': 10, 'dashes': False, 'datasource': 'MySQL', 'fill': 1,
-             'fillGradient': 0, 'gridPos': {'h': 6, 'w': 17, 'x': 6, 'y': 12}, 'hiddenSeries': False, 'id': 2,
-             'legend': {'avg': False, 'current': False, 'max': False, 'min': False, 'show': True, 'total': False,
-                        'values': False}, 'lines': True, 'linewidth': 1, 'nullPointMode': 'null',
-             'options': {'dataLinks': []}, 'percentage': False, 'pointradius': 2, 'points': False, 'renderer': 'flot',
-             'seriesOverrides': [], 'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
-                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                 'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Device) AS "GPU"\nFROM my_gpu_{}\nWHERE\n '
-                           ' $__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
-                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
-                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
-             'timeFrom': None, 'timeRegions': [], 'timeShift': None, 'title': 'GPU',
-             'tooltip': {'shared': True, 'sort': 0, 'value_type': 'individual'}, 'type': 'graph',
-             'xaxis': {'buckets': None, 'mode': 'time', 'name': None, 'show': True, 'values': []},
-             'yaxes': [{'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None, 'show': True},
-                       {'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None, 'show': True}],
-             'yaxis': {'align': False, 'alignLevel': None}},
-            {'aliasColors': {}, 'bars': False, 'dashLength': 10, 'dashes': False, 'datasource': 'MySQL', 'fill': 1,
-             'fillGradient': 0, 'gridPos': {'h': 6, 'w': 17, 'x': 6, 'y': 18}, 'hiddenSeries': False, 'id': 6,
-             'legend': {'avg': False, 'current': False, 'max': False, 'min': False, 'show': True, 'total': False,
-                        'values': False}, 'lines': True, 'linewidth': 1, 'nullPointMode': 'null',
-             'options': {'dataLinks': []}, 'percentage': False, 'pointradius': 2, 'points': False, 'renderer': 'flot',
-             'seriesOverrides': [], 'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
-                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                 'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(fps) AS "FPS"\nFROM my_fps_{}\nWHERE\n '
-                           ' $__timeFilter(time)\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
-                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
-                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
-             'timeFrom': None, 'timeRegions': [], 'timeShift': None, 'title': 'FPS',
-             'tooltip': {'shared': True, 'sort': 0, 'value_type': 'individual'}, 'type': 'graph',
-             'xaxis': {'buckets': None, 'mode': 'time', 'name': None, 'show': True, 'values': []},
-             'yaxes': [{'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None, 'show': True},
-                       {'format': 'short', 'label': None, 'logBase': 1, 'max': None, 'min': None, 'show': True}],
-             'yaxis': {'align': False, 'alignLevel': None}}
-        ]
         data = '''
             {
               "dashboard": {
@@ -437,6 +475,7 @@ class Grafana:
 
 if __name__ == "__main__":
     grafana = Grafana("localhost", "30000", "admin", "admin", "localhost", "33306",
-                      "root", "admin", "test", "pignose_1003_2337", "c6b0ab4fa8867c51cf1c5b6d8cd076d3957192b2")
-    panels = grafana.get_current_panels("BM7W7Vv7z")
+                      "root", "admin", "iOSPerformance", "pignose_1003_2337",
+                      "c6b0ab4fa8867c51cf1c5b6d8cd076d3957192b2")
+    panels = grafana.get_current_panels("MkdaJHv7k")
     time.sleep(1)

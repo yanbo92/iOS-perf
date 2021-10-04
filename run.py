@@ -73,6 +73,7 @@ def start_test():
 
 
 if __name__ == "__main__":
+    # 参数处理部分
     parser = argparse.ArgumentParser()
     parser.add_argument("--udid", type=str, required=False, default="")
     parser.add_argument("--bundleid", type=str, required=False, default="com.insta360.oner")
@@ -102,6 +103,7 @@ if __name__ == "__main__":
     mysql_password = args.mysql_password
     mysql_db = args.mysql_db
 
+    # 运行代码
     table_name = tidevice.Device(device_id).name + "_" + datetime.datetime.now().strftime("%m%d_%H%M")
 
     mysql = Mysql(mysql_host, mysql_port, mysql_username, mysql_password, mysql_db, table_name, device_id)

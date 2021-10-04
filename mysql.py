@@ -26,19 +26,21 @@ class Mysql:
         return connect
 
     def db_init(self):
+        #
         try:
             connect = self.db_connect()
             # 获取游标
             cursor = connect.cursor()
             cursor.execute("use {};".format(self.mysql_db))
-            cursor.execute("CREATE TABLE my_fps_{} (fps VARCHAR(255), jank VARCHAR(255), big_jank  VARCHAR(255), "
-                           "stutter  VARCHAR(255), time timestamp)".format(self.table_name))
-            cursor.execute("CREATE TABLE my_gpu_{} (gpu_Device VARCHAR(255), gpu_Renderer VARCHAR(255), "
-                           "gpu_Tiler VARCHAR(255), time  timestamp)".format(self.table_name))
+            cursor.execute("CREATE TABLE FPS (fps VARCHAR(255), jank VARCHAR(255), big_jank  VARCHAR(255), "
+                           "stutter  VARCHAR(255),runid  VARCHAR(255),  time timestamp)")
+            cursor.execute("CREATE TABLE GPU (gpu_Device VARCHAR(255), gpu_Renderer VARCHAR(255), "
+                           "gpu_Tiler VARCHAR(255),runid  VARCHAR(255), time  timestamp)")
             cursor.execute(
-                "CREATE TABLE my_cpu_{} (use_cpu VARCHAR(255), sys_cpu VARCHAR(255), count_cpu VARCHAR(255), "
-                "time  timestamp)".format(self.table_name))
-            cursor.execute("CREATE TABLE my_memory_{} (memory VARCHAR(255), time  timestamp)".format(self.table_name))
+                "CREATE TABLE CPU (use_cpu VARCHAR(255), sys_cpu VARCHAR(255), count_cpu VARCHAR(255), "
+                "runid  VARCHAR(255), time  timestamp)")
+            cursor.execute("CREATE TABLE MEM (memory VARCHAR(255), runid  VARCHAR(255), "
+                           "time  timestamp)")
             time.sleep(3)
             connect.commit()
             # 关闭连接
@@ -49,8 +51,8 @@ class Mysql:
             print("Error: " + str(e))
     
     def insert_cpu(self, value):
-        cpu_sql_prefix = "INSERT INTO my_cpu_{} (use_cpu) VALUES('".format(self.table_name)
-        sql = cpu_sql_prefix + value + "')"
+        cpu_sql_prefix = "INSERT INTO CPU (use_cpu,runid) VALUES('"
+        sql = cpu_sql_prefix + value + "','" + self.table_name + "')"
         connect = self.db_connect()
         cursor = connect.cursor()
         cursor.execute(sql)
@@ -60,8 +62,8 @@ class Mysql:
         connect.close()
 
     def insert_memory(self, value):
-        mem_sql_prefix = "INSERT INTO my_memory_{} (memory) VALUES('".format(self.table_name)
-        sql = mem_sql_prefix + value + "')"
+        mem_sql_prefix = "INSERT INTO MEM (memory,runid) VALUES('"
+        sql = mem_sql_prefix + value + "','" + self.table_name + "')"
         connect = self.db_connect()
         cursor = connect.cursor()
         cursor.execute(sql)
@@ -71,8 +73,8 @@ class Mysql:
         connect.close()
 
     def insert_fps(self, fps, jank, big_jank, stutter):
-        fps_sql_prefix = "INSERT INTO my_fps_{} (fps,jank,big_jank,stutter) VALUES('".format(self.table_name)
-        sql = fps_sql_prefix + fps + "','" + jank + "','" + big_jank + "','" + stutter + "')"
+        fps_sql_prefix = "INSERT INTO FPS (fps,jank,big_jank,stutter,runid) VALUES('"
+        sql = fps_sql_prefix + fps + "','" + jank + "','" + big_jank + "','" + stutter + "','" + self.table_name + "')"
         connect = self.db_connect()
         cursor = connect.cursor()
         cursor.execute(sql)
@@ -82,8 +84,8 @@ class Mysql:
         connect.close()
 
     def insert_gpu(self, gpu_device, gpu_renderer, gpu_tiler):
-        gpu_sql_prefix = "INSERT INTO my_gpu_{} (gpu_Device,gpu_Renderer,gpu_Tiler) VALUES('".format(self.table_name)
-        sql = gpu_sql_prefix + gpu_device + "','" + gpu_renderer + "','" + gpu_tiler + "')"
+        gpu_sql_prefix = "INSERT INTO GPU (gpu_Device,gpu_Renderer,gpu_Tiler,runid) VALUES('"
+        sql = gpu_sql_prefix + gpu_device + "','" + gpu_renderer + "','" + gpu_tiler + "','" + self.table_name + "')"
         connect = self.db_connect()
         cursor = connect.cursor()
         cursor.execute(sql)
