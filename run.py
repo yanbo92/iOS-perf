@@ -62,8 +62,13 @@ def start_test():
             memory = ss.split("'value':")[1][0:6].split("}")[0]
             # 数据存数据库连接数据库
             mysql.insert_memory(memory)
+    try:
+        perf.start(app_bundle_id, callback=callback)
+    except ssl.SSLEOFError as ssl_error:
+        print("ssl error occur! That's a bug from tidevice, and I will retry after 5s")
+        time.sleep(5)
+        perf.start(app_bundle_id, callback=callback)
 
-    perf.start(app_bundle_id, callback=callback)
     time.sleep(99999)  # 测试时长
     perf.stop()
     py_ios_device.stop_get_gpu(channel)
