@@ -139,7 +139,9 @@ class Grafana:
                             'datasource': 'MySQL', 'gridPos': {'h': 24, 'w': 5, 'x': 0, 'y': 0}, 'id': 10, 'links': [],
                             'mode': 'markdown', 'pluginVersion': '6.7.4', 'targets': [
                 {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': False,
-                 'rawSql': 'SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n  <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER BY <time_column> ASC\n',
+                 'rawSql': 'SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n '
+                           ' <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER'
+                           ' BY <time_column> ASC\n',
                  'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
                  'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'timeFrom': None,
                             'timeShift': None, 'title': 'INFO', 'type': 'text'},
