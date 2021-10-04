@@ -30,7 +30,7 @@ class Mysql:
             connect = self.db_connect()
             # 获取游标
             cursor = connect.cursor()
-            cursor.execute("use test;")
+            cursor.execute("use {};".format(self.mysql_db))
             cursor.execute("CREATE TABLE my_fps_{} (fps VARCHAR(255), jank VARCHAR(255), big_jank  VARCHAR(255), "
                            "stutter  VARCHAR(255), time timestamp)".format(self.table_name))
             cursor.execute("CREATE TABLE my_gpu_{} (gpu_Device VARCHAR(255), gpu_Renderer VARCHAR(255), "

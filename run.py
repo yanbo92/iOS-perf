@@ -84,7 +84,7 @@ if __name__ == "__main__":
     parser.add_argument("--mysql_username", type=str, required=False, default="root")
     parser.add_argument("--grafana_password", type=str, required=False, default="admin")
     parser.add_argument("--mysql_password", type=str, required=False, default="admin")
-    parser.add_argument("--mysql_db", type=str, required=False, default="test")
+    parser.add_argument("--mysql_db", type=str, required=False, default="iOSPerformance")
     args = parser.parse_args()
     print("Parameters list:")
     for arg in vars(args):

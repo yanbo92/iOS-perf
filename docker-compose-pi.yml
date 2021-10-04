@@ -12,7 +12,7 @@ services:
   perf_database:
     image: biarms/mysql:5.7
     environment:
-      MYSQL_DATABASE: test
+      MYSQL_DATABASE: iOSPerformance
       MYSQL_ROOT_PASSWORD: admin
     ports:
       - "33006:3306"
