@@ -107,11 +107,9 @@ if __name__ == "__main__":
     table_name = tidevice.Device(device_id).name + "_" + datetime.datetime.now().strftime("%m%d_%H%M")
 
     mysql = Mysql(mysql_host, mysql_port, mysql_username, mysql_password, mysql_db, table_name, device_id)
-    mysql.db_init()
 
     grafana = Grafana(grafana_host, grafana_port, grafana_username, grafana_password, mysql_host, mysql_port,
                       mysql_username, mysql_password, mysql_db, table_name, device_id)
-    grafana.add_mysql_source()
     grafana.setup_dashboard()
     grafana.to_explorer()
 

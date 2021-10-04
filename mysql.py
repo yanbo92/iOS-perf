@@ -11,6 +11,7 @@ class Mysql:
         self.mysql_db = mysql_db
         self.table_name = table_name
         self.device_id = device_id
+        self.db_init()
         
     def db_connect(self):
         # 根据mysql配置参数 返回游标对象
@@ -46,9 +47,10 @@ class Mysql:
             # 关闭连接
             cursor.close()
             connect.close()
-            
+            print("db init success")
         except BaseException as e:
-            print("Error: " + str(e))
+            print("Error Info: " + str(e))
+            print("Maybe this database dont need initializing, just ignore the error")
     
     def insert_cpu(self, value):
         cpu_sql_prefix = "INSERT INTO CPU (use_cpu,runid) VALUES('"

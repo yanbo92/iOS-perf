@@ -23,6 +23,7 @@ class Grafana:
         self.table_name = table_name
         self.device_id = device_id
         self.dashboard_url = "http://{}:{}".format(grafana_host, grafana_port)
+        self.add_mysql_source()
 
     def get_device_info(self, name):
         if self.device_id == "":
