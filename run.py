@@ -47,7 +47,6 @@ def start_test():
     channel = py_ios_device.start_get_gpu(callback=callback_gpu)
     channel2 = py_ios_device.start_get_fps(callback=callback_fps)
     t = tidevice.Device(device_id)  # iOS设备
-    # perf = tidevice.Performance(t, perfs=list(tidevice.DataType))
     perf = tidevice.Performance(t)
 
     def callback(_type: tidevice.DataType, value: dict):
@@ -74,9 +73,6 @@ def start_test():
 
 
 if __name__ == "__main__":
-
-    print("wait for mysql setup")
-    # time.sleep(10)
     parser = argparse.ArgumentParser()
     parser.add_argument("--udid", type=str, required=False, default="")
     parser.add_argument("--bundleid", type=str, required=False, default="com.insta360.oner")
