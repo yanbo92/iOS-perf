@@ -4,6 +4,7 @@
 
 modified by liyanbo at 20210927
 """
+# -*- coding: UTF-8 -*-
 import ast
 import datetime
 import json
@@ -64,7 +65,7 @@ def start_test():
             mysql.insert_memory(memory)
     try:
         perf.start(app_bundle_id, callback=callback)
-    except ssl.SSLEOFError as ssl_error:
+    except BaseException as ssl_error:
         print("ssl error occur! That's a bug from tidevice, and I will retry after 5s")
         time.sleep(5)
         perf.start(app_bundle_id, callback=callback)
