@@ -47,17 +47,39 @@
 ## 运行命令
 命令行执行：
 
-`python run.py --udid=00008101-00XXXXXXXXXX \
---bundleid=com.apple.Preferences \
---grafana_host=localhost \
---grafana_port=30000 \
---grafana_user=admin \
---grafana_password=admin \
---mysql_host=localhost \
---mysql_port=33306 \
---mysql_username=root \
---mysql_password=admin \
+`python run.py --udid=00008101-00XXXXXXXXXX \`
+
+ `
+--bundleid=com.apple.Preferences \`
+
+ `
+--grafana_host=localhost \`
+
+ `
+--grafana_port=30000 \`
+
+ `
+--grafana_user=admin \`
+
+ `
+--grafana_password=admin \`
+
+ `
+--mysql_host=localhost \`
+
+ `
+--mysql_port=33306 \`
+
+ `
+--mysql_username=root \`
+
+ `
+--mysql_password=admin \`
+
+ `
 --mysql_db=iOSPerformance `
+
+
 
 
 
