@@ -5,16 +5,9 @@
 modified by liyanbo at 20210927
 """
 # -*- coding: UTF-8 -*-
-import ast
 import datetime
-import json
-import os
 import time
-import webbrowser
-from pprint import pprint
 import argparse
-import pymysql.cursors
-import requests
 import tidevice
 from grafana import Grafana
 from mysql import Mysql
@@ -82,7 +75,7 @@ if __name__ == "__main__":
     # 参数处理部分
     parser = argparse.ArgumentParser()
     parser.add_argument("--udid", type=str, required=False, default="")
-    parser.add_argument("--bundleid", type=str, required=False, default="com.apple.Preferences")
+    parser.add_argument("--bundleid", type=str, required=False, default="com.insta360.oner")
     parser.add_argument("--grafana_host", type=str, required=False, default="localhost")
     parser.add_argument("--mysql_host", type=str, required=False, default="localhost")
     parser.add_argument("--grafana_port", type=str, required=False, default="30000")
@@ -110,12 +103,12 @@ if __name__ == "__main__":
     mysql_db = args.mysql_db
 
     # 运行代码
-    table_name = tidevice.Device(device_id).name + "_" + datetime.datetime.now().strftime("%m%d_%H%M")
+    run_id = tidevice.Device(device_id).name + "_" + datetime.datetime.now().strftime("%m%d_%H%M")
 
-    mysql = Mysql(mysql_host, mysql_port, mysql_username, mysql_password, mysql_db, table_name, device_id)
+    mysql = Mysql(mysql_host, mysql_port, mysql_username, mysql_password, mysql_db, run_id)
 
     grafana = Grafana(grafana_host, grafana_port, grafana_username, grafana_password, mysql_host, mysql_port,
-                      mysql_username, mysql_password, mysql_db, table_name, device_id)
+                      mysql_username, mysql_password, mysql_db, run_id, device_id)
     grafana.setup_dashboard()
     grafana.to_explorer()
 

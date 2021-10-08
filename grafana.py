@@ -12,7 +12,7 @@ from pprint import pprint
 
 class Grafana:
     def __init__(self, grafana_host, grafana_port, grafana_username, grafana_password, mysql_host, mysql_port,
-                 mysql_username, mysql_password, mysql_db, table_name, device_id):
+                 mysql_username, mysql_password, mysql_db, run_id, device_id):
         self.grafana_host = grafana_host
         self.mysql_host = mysql_host
         self.grafana_port = grafana_port
@@ -22,7 +22,7 @@ class Grafana:
         self.grafana_password = grafana_password
         self.mysql_password = mysql_password
         self.mysql_db = mysql_db
-        self.table_name = table_name
+        self.run_id = run_id
         self.device_id = device_id
         self.dashboard_url = "http://{}:{}".format(grafana_host, grafana_port)
         self.add_mysql_source()
@@ -165,7 +165,7 @@ class Grafana:
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(memory) AS "MEM"\n'
                                       'FROM my_memory_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY'
-                                      ' $__timeGroup(time,3s)'.format(self.table_name),
+                                      ' $__timeGroup(time,3s)'.format(self.run_id),
                             'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                             'timeColumn': 'time',
                             'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -187,7 +187,7 @@ class Grafana:
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(use_cpu) AS "CPU"\nFROM '
                                       'my_cpu_{}\nWHERE\n $__timeFilter(time)\nGROUP BY 1\nORDER BY'
-                                      ' $__timeGroup(time,3s)'.format(self.table_name),
+                                      ' $__timeGroup(time,3s)'.format(self.run_id),
                             'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                             'timeColumn': 'time',
                             'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -209,21 +209,21 @@ class Grafana:
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Device) AS "GPU"\nFROM '
                                       'my_gpu_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY '
-                                      '$__timeGroup(time,3s)'.format(self.table_name),
+                                      '$__timeGroup(time,3s)'.format(self.run_id),
                             'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                             'timeColumn': 'time',
                             'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Renderer) AS '
                                       '"GPU_Renderer"\nFROM my_gpu_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY'
-                                      ' 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                      ' 1\nORDER BY $__timeGroup(time,3s)'.format(self.run_id),
                             'refId': 'B', 'select': [[{'params': ['value'], 'type': 'column'}]],
                             'timeColumn': 'time',
                             'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Tiler) AS '
                                       '"GPU_TILER"\nFROM my_gpu_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY '
-                                      '1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                      '1\nORDER BY $__timeGroup(time,3s)'.format(self.run_id),
                             'refId': 'C', 'select': [[{'params': ['value'], 'type': 'column'}]],
                             'timeColumn': 'time',
                             'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -245,28 +245,28 @@ class Grafana:
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(fps) AS "FPS"\nFROM'
                                       ' my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY '
-                                      '$__timeGroup(time,3s)'.format(self.table_name),
+                                      '$__timeGroup(time,3s)'.format(self.run_id),
                             'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                             'timeColumn': 'time',
                             'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(jank) AS "JANK"\nFROM '
                                       'my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY 1\nORDER BY'
-                                      ' $__timeGroup(time,3s)'.format(self.table_name),
+                                      ' $__timeGroup(time,3s)'.format(self.run_id),
                             'refId': 'B', 'select': [[{'params': ['value'], 'type': 'column'}]],
                             'timeColumn': 'time',
                             'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(big_jank) AS '
                                       '"BIG_JANK"\nFROM my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY '
-                                      '1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                      '1\nORDER BY $__timeGroup(time,3s)'.format(self.run_id),
                             'refId': 'C', 'select': [[{'params': ['value'], 'type': 'column'}]],
                             'timeColumn': 'time',
                             'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(stutter) AS '
                                       '"STUTTER"\nFROM my_fps_{}\nWHERE\n  $__timeFilter(time)\nGROUP BY'
-                                      ' 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                      ' 1\nORDER BY $__timeGroup(time,3s)'.format(self.run_id),
                             'refId': 'D', 'select': [[{'params': ['value'], 'type': 'column'}]],
                             'timeColumn': 'time',
                             'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -312,7 +312,7 @@ class Grafana:
                             'datasource': 'MySQL', 'gridPos': {'h': 24, 'w': 5, 'x': 0, 'y': 0}, 'id': 10, 'links': [],
                             'mode': 'markdown', 'pluginVersion': '6.7.4', 'targets': [
                 {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': False,
-                 'rawSql': 'SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n  <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER BY <time_column> ASC\n'.format(self.table_name),
+                 'rawSql': 'SELECT\n  UNIX_TIMESTAMP(<time_column>) as time_sec,\n  <value column> as value,\n  <series name column> as metric\nFROM <table name>\nWHERE $__timeFilter(time_column)\nORDER BY <time_column> ASC\n'.format(self.run_id),
                  'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
                  'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'timeFrom': None,
                             'timeShift': None, 'title': 'INFO', 'type': 'text'},
@@ -325,7 +325,7 @@ class Grafana:
                             'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
                             'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(memory) AS "MEM"\nFROM MEM\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(memory) AS "MEM"\nFROM MEM\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.run_id),
                                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -345,7 +345,7 @@ class Grafana:
                             'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
                             'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(use_cpu) AS "USE_CPU"\nFROM CPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(use_cpu) AS "USE_CPU"\nFROM CPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.run_id),
                                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -366,21 +366,21 @@ class Grafana:
                             'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
                                {'format': 'time_series', 'group': [{'params': ['1s', 'none'], 'type': 'time'}],
                                 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(gpu_Device) AS "GPU_Device"\nFROM GPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(gpu_Device) AS "GPU_Device"\nFROM GPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.run_id),
                                 'refId': 'A', 'select': [[{'params': ['gpu_Device'], 'type': 'column'},
                                                           {'params': ['avg'], 'type': 'aggregate'},
                                                           {'params': ['gpu_Device'], 'type': 'alias'}]], 'table': 'GPU',
                                 'timeColumn': 'time', 'timeColumnType': 'timestamp',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'},
                                           {'datatype': 'varchar', 'name': '',
-                                           'params': ['runid', '=', "'{}'".format(self.table_name)], 'type': 'expression'}]},
+                                           'params': ['runid', '=', "'{}'".format(self.run_id)], 'type': 'expression'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Renderer) AS "GPU_Renderer"\nFROM GPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Renderer) AS "GPU_Renderer"\nFROM GPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.run_id),
                                 'refId': 'B', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Tiler) AS "GPU_Tiler"\nFROM GPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,3s),\n  avg(gpu_Tiler) AS "GPU_Tiler"\nFROM GPU\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,3s)'.format(self.run_id),
                                 'refId': 'C', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -400,22 +400,22 @@ class Grafana:
                             'pointradius': 2, 'points': False, 'renderer': 'flot', 'seriesOverrides': [],
                             'spaceLength': 10, 'stack': False, 'steppedLine': False, 'targets': [
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(fps) AS "FPS"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(fps) AS "FPS"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.run_id),
                                 'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(jank) AS "Jank"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(jank) AS "Jank"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.run_id),
                                 'refId': 'B', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(big_jank) AS "Big_Jank"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(big_jank) AS "Big_Jank"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.run_id),
                                 'refId': 'C', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
                                {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
-                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(stutter) AS "Stutter"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.table_name),
+                                'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(stutter) AS "Stutter"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.run_id),
                                 'refId': 'D', 'select': [[{'params': ['value'], 'type': 'column'}]],
                                 'timeColumn': 'time',
                                 'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
@@ -459,7 +459,7 @@ class Grafana:
               "folderId": 0,
               "overwrite": true
             }
-            ''' % (self.table_name, str(json.dumps(panels_list)))
+            ''' % (self.run_id, str(json.dumps(panels_list)))
         pprint(data)
 
         headers = {
@@ -484,7 +484,7 @@ class Grafana:
 
 if __name__ == "__main__":
     grafana = Grafana("localhost", "30000", "admin", "admin", "localhost", "33306",
-                      "root", "admin", "iOSPerformance", "pignose_1003_2337",
-                      "c6b0ab4fa8867c51cf1c5b6d8cd076d3957192b2")
+                      "root", "admin", "iOSPerformance", "iPhone8_1003_2337",
+                      "c6b0ab4fa8867c51cf1c5b6d8cd076dXXXXXXXX")
     panels = grafana.get_current_panels("MkdaJHv7k")
     time.sleep(1)

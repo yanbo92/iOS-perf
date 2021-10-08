@@ -109,3 +109,28 @@
 > - --mysql_port：MySQL的端口号，默认值33306
 > - --mysql_user：MySQL的用户名，默认值root
 > - --mysql_password：MySQL的用户名，默认值admin
+
+
+
+## 数据导出
+
+命令行执行：
+
+`python mysql.py --runid=iphone6_1008_1532 \`
+
+ `
+--mysql_host=localhost \`
+
+ `
+--mysql_port=33306 \`
+
+ `
+--mysql_username=root \`
+
+ `
+--mysql_password=admin \`
+
+ `
+--mysql_db=iOSPerformance `
+
+其中，`--runid`为必须参数，可以从显示测试数据的Grafana页面的左上角找到，通常为手机名称+月日+时分。其余Mysql参数均为可选参数，默认值与上方[MySQL可选参数](#MySQL可选参数)相同。
