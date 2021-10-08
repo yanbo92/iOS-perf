@@ -6,6 +6,7 @@ import os
 import requests
 import time
 import webbrowser
+import platform
 from pprint import pprint
 
 
@@ -27,10 +28,16 @@ class Grafana:
         self.add_mysql_source()
 
     def get_device_info(self, name):
+        find_cmd = ""
+        if platform.system() == 'Darwin':
+            find_cmd = "grep"
+        if platform.system() == 'Windows':
+            find_cmd = "findstr"
+            
         if self.device_id == "":
-            cmd = "tidevice info | grep {}".format(name)
+            cmd = "tidevice info | {} {}".format(find_cmd, name)
         else:
-            cmd = "tidevice -u {} info | grep {}".format(self.device_id, name)
+            cmd = "tidevice -u {} info | {} {}".format(self.device_id, find_cmd, name)
         result = os.popen(cmd)
         # 返回的结果是一个<class 'os._wrap_close'>对象，需要读取后才能处理
         context = result.read()
