@@ -2,6 +2,16 @@
 
 本项目基于jlintxia开源的iOS测试方案修改而来，增加动态建表，动态增加grafana面板以及docker打包环境等特性。其中iOS性能数据来源于开源工具tidevice和py-ios-device。
 
+​    
+
+
+
+## 效果展示
+
+![](iOS-perf-3x.gif)
+
+
+
   
 
 
