@@ -4,7 +4,7 @@
 
 
 
-## 环境搭建
+## 准备工作
 
 服务端搭建依赖docker以及docker-compose，安装指南：
 
@@ -30,15 +30,15 @@
 >
 >docker-compose version 1.29.2, build 5becea4c
 
-拉去镜像并启动服务：
+拉取镜像并启动服务：
 
 `docker-compose up -d  `
 
-### 
+
 
 ### 本地环境搭建
 
-命令行运行
+命令行执行
 
 `pip install -r requirements.txt`
 
@@ -47,20 +47,27 @@
 ## 运行命令
 命令行执行：
 
-`python run.py --udid=XXXXXX --bundleid=com.insta360.oner`
+`python run.py --udid=00008101-00XXXXXXXXXX \
+--bundleid=com.apple.Preferences \
+--grafana_host=localhost \
+--grafana_port=30000 \
+--grafana_user=admin \
+--grafana_password=admin \
+--mysql_host=localhost \
+--mysql_port=33306 \
+--mysql_username=root \
+--mysql_password=admin \
+--mysql_db=iOSPerformance `
 
 
 
 ### 运行参数说明
 
-#### 必须参数
 
-如果在本机直接运行Docker，且电脑只连接一台手机，可以只传bundleid这个参数，其他均默认
 
-> - --bundleid：待测APP的包名，通过`ideviceinstaller -l`获取
+#### 建议修改参数
 
-#### udid 可选
-
+>- --bundleid：待测APP的包名，通过`ideviceinstaller -l`获取，默认值为`com.apple.Preferences`
 >- --udid iPhone：手机的唯一标识符，通过 `idevice_id -l` 获取，客户端只连接一台手机时不用写
 
 
