@@ -2,6 +2,8 @@
 
 本项目基于jlintxia开源的iOS测试方案修改而来，增加动态建表，动态增加grafana面板以及docker打包环境等特性。其中iOS性能数据来源于开源工具tidevice和py-ios-device。
 
+  
+
 
 
 ## 准备工作
@@ -15,6 +17,8 @@
 运行测试依赖python3环境，安装指南：
 
 >https://www.python.org/downloads/
+
+  
 
 
 
@@ -34,6 +38,8 @@
 
 `docker-compose up -d  `
 
+  
+
 
 
 ### 本地环境搭建
@@ -41,6 +47,8 @@
 命令行执行
 
 `pip install -r requirements.txt`
+
+  
 
 
 
@@ -79,6 +87,8 @@
  `
 --mysql_db=iOSPerformance `
 
+  
+
 
 
 
@@ -92,6 +102,8 @@
 >- --bundleid：待测APP的包名，通过`ideviceinstaller -l`获取，默认值为`com.apple.Preferences`
 >- --udid iPhone：手机的唯一标识符，通过 `idevice_id -l` 获取，客户端只连接一台手机时不用写
 
+  
+
 
 
 #### Grafana可选参数
@@ -101,6 +113,8 @@
 > - --grafana_user：Grafana的用户名，默认值admin
 > - --grafana_password：Grafana的密码，默认值admin
 
+  
+
 
 
 #### MySQL可选参数
@@ -109,6 +123,8 @@
 > - --mysql_port：MySQL的端口号，默认值33306
 > - --mysql_user：MySQL的用户名，默认值root
 > - --mysql_password：MySQL的用户名，默认值admin
+
+  
 
 
 
@@ -132,5 +148,9 @@
 
  `
 --mysql_db=iOSPerformance `
+
+  
+
+
 
 其中，`--runid`为必须参数，可以从显示测试数据的Grafana页面的左上角找到，通常为手机名称+月日+时分。其余Mysql参数均为可选参数，默认值与上方[MySQL可选参数](#MySQL可选参数)相同。
