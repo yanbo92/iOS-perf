@@ -75,7 +75,7 @@ if __name__ == "__main__":
     # 参数处理部分
     parser = argparse.ArgumentParser()
     parser.add_argument("--udid", type=str, required=False, default="")
-    parser.add_argument("--bundleid", type=str, required=False, default="com.insta360.oner")
+    parser.add_argument("--bundleid", type=str, required=False, default="com.apple.Preferences")
     parser.add_argument("--grafana_host", type=str, required=False, default="localhost")
     parser.add_argument("--mysql_host", type=str, required=False, default="localhost")
     parser.add_argument("--grafana_port", type=str, required=False, default="30000")
