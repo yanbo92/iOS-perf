@@ -12,6 +12,8 @@ import tidevice
 from grafana import Grafana
 from mysql import Mysql
 from ios_device import py_ios_device
+from tidevice._proto import MODELS
+from tidevice._perf import DataType
 
 
 def callback_fps(res):
@@ -41,9 +43,10 @@ def start_test():
     channel = py_ios_device.start_get_gpu(callback=callback_gpu)
     channel2 = py_ios_device.start_get_fps(callback=callback_fps)
     t = tidevice.Device(device_id)  # iOS设备
-    perf = tidevice.Performance(t)
+    perf = tidevice.Performance(t, [DataType.CPU, DataType.MEMORY, DataType.NETWORK])
 
     def callback(_type: tidevice.DataType, value: dict):
+        print(_type, value)
         if _type.value == "cpu":
             print('CPU打印', value)
             ss = str(value)  # 转成str
@@ -56,10 +59,15 @@ def start_test():
             memory = ss.split("'value':")[1][0:6].split("}")[0]
             # 数据存数据库连接数据库
             mysql.insert_memory(memory)
+        if _type.value == "network":
+            print('网络打印', value)
+            downFlow = value['downFlow']
+            upFlow = value['upFlow']
+            mysql.insert_net(upFlow, downFlow)
     try:
         perf.start(app_bundle_id, callback=callback)
     except BaseException as ssl_error:
-        print("ssl error occur! That's a bug from tidevice, and I will retry after 5s")
+        print(ssl_error)
         time.sleep(5)
         perf.start(app_bundle_id, callback=callback)
 
@@ -71,13 +79,34 @@ def start_test():
     channel2.stop()
 
 
+def get_device_info(name):
+    device = tidevice.Device(device_id)  # iOS设备
+    value = device.get_value()
+
+    for attr in ('DeviceName', 'ProductVersion', 'ProductType',
+                 'ModelNumber', 'SerialNumber', 'PhoneNumber',
+                 'CPUArchitecture', 'ProductName', 'ProtocolVersion',
+                 'RegionInfo', 'TimeIntervalSince1970', 'TimeZone',
+                 'UniqueDeviceID', 'WiFiAddress', 'BluetoothAddress',
+                 'BasebandVersion'):
+        if attr == name:
+            if value.get(attr):
+                return str(value.get(attr)).replace(" ", "")
+    if name == "MarketName":
+        return MODELS.get(value['ProductType']).replace(" ", "")
+    return None
+
+
 if __name__ == "__main__":
+
     # 参数处理部分
     parser = argparse.ArgumentParser()
     parser.add_argument("--udid", type=str, required=False, default="")
     parser.add_argument("--bundleid", type=str, required=False, default="com.apple.Preferences")
     parser.add_argument("--grafana_host", type=str, required=False, default="localhost")
     parser.add_argument("--mysql_host", type=str, required=False, default="localhost")
+    # parser.add_argument("--grafana_host", type=str, required=False, default="localhost")
+    # parser.add_argument("--mysql_host", type=str, required=False, default="localhost")
     parser.add_argument("--grafana_port", type=str, required=False, default="30000")
     parser.add_argument("--mysql_port", type=str, required=False, default="33306")
     parser.add_argument("--grafana_username", type=str, required=False, default="admin")
@@ -85,6 +114,9 @@ if __name__ == "__main__":
     parser.add_argument("--grafana_password", type=str, required=False, default="admin")
     parser.add_argument("--mysql_password", type=str, required=False, default="admin")
     parser.add_argument("--mysql_db", type=str, required=False, default="iOSPerformance")
+    parser.add_argument("--runid", type=str, required=False, default="")
+    parser.add_argument('--export', type=int, required=False, default=0, help='python run.py --export=1 --runid=iphone6_1012_1111')
+
     args = parser.parse_args()
     print("Parameters list:")
     for arg in vars(args):
@@ -101,15 +133,26 @@ if __name__ == "__main__":
     grafana_password = args.grafana_password
     mysql_password = args.mysql_password
     mysql_db = args.mysql_db
+    run_id = args.runid
+    export = args.export
 
     # 运行代码
-    run_id = tidevice.Device(device_id).name + "_" + datetime.datetime.now().strftime("%m%d_%H%M")
+    if not export:
+        tidevice_obj = tidevice.Device(device_id)  # iOS设备
 
-    mysql = Mysql(mysql_host, mysql_port, mysql_username, mysql_password, mysql_db, run_id)
+        MarketName = get_device_info("MarketName")
+        run_id = get_device_info("MarketName") + "_" + datetime.datetime.now().strftime("%m%d_%H%M")
 
-    grafana = Grafana(grafana_host, grafana_port, grafana_username, grafana_password, mysql_host, mysql_port,
-                      mysql_username, mysql_password, mysql_db, run_id, device_id)
-    grafana.setup_dashboard()
-    grafana.to_explorer()
+        mysql = Mysql(mysql_host, mysql_port, mysql_username, mysql_password, mysql_db, run_id)
 
-    start_test()
+        grafana = Grafana(grafana_host, grafana_port, grafana_username, grafana_password, mysql_host, mysql_port,
+                          mysql_username, mysql_password, mysql_db, run_id, device_id)
+        grafana.setup_dashboard()
+        grafana.to_explorer()
+
+        start_test()
+    else:
+        mysql = Mysql(mysql_host, mysql_port, mysql_username, mysql_password, mysql_db, run_id)
+        mysql.export()
+
+

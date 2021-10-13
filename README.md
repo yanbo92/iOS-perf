@@ -1,8 +1,10 @@
 # iOS-perf
 
+这是一款iOS性能监控工具，支持Mac以及Windows端运行，电脑通过USB连接手机后运行脚本即可。
+
 本项目基于jlintxia开源的iOS测试方案修改而来，增加动态建表，动态增加grafana面板以及docker打包环境等特性。其中iOS性能数据来源于开源工具tidevice和py-ios-device。
 
-​    
+
 
 
 
@@ -10,9 +12,9 @@
 
 ![](iOS-perf-3x.gif)
 
-
-
   
+
+
 
 
 
@@ -29,6 +31,10 @@
 >https://www.python.org/downloads/
 
   
+
+
+
+
 
 
 
@@ -52,13 +58,21 @@
 
 
 
+
+
+
+
 ### 本地环境搭建
 
 命令行执行
 
 `pip install -r requirements.txt`
 
+
+
   
+
+
 
 
 
@@ -96,6 +110,10 @@
 
  `
 --mysql_db=iOSPerformance `
+
+
+
+
 
   
 
@@ -159,7 +177,13 @@
  `
 --mysql_db=iOSPerformance `
 
+
+
   
+
+
+
+
 
 
 

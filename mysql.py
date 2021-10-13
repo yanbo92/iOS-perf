@@ -4,6 +4,7 @@ import time
 import xlwt
 import argparse
 
+
 class Mysql:
     def __init__(self, mysql_host, mysql_port, mysql_username, mysql_password, mysql_db, run_id):
         self.mysql_host = mysql_host
@@ -42,6 +43,8 @@ class Mysql:
                 "CREATE TABLE CPU (use_cpu VARCHAR(255), sys_cpu VARCHAR(255), count_cpu VARCHAR(255), "
                 "runid  VARCHAR(255), time  timestamp)")
             cursor.execute("CREATE TABLE MEM (memory VARCHAR(255), runid  VARCHAR(255), "
+                           "time  timestamp)")
+            cursor.execute("CREATE TABLE NET (upflow VARCHAR(255), downflow VARCHAR(255), runid  VARCHAR(255), "
                            "time  timestamp)")
             time.sleep(3)
             connect.commit()
@@ -97,8 +100,19 @@ class Mysql:
         cursor.close()
         connect.close()
 
+    def insert_net(self, upflow, downflow):
+        net_sql_prefix = "INSERT INTO NET (upflow,downflow,runid) VALUES('"
+        sql = net_sql_prefix + str(upflow) + "','" + str(downflow) + "','" + self.run_id + "')"
+        connect = self.db_connect()
+        cursor = connect.cursor()
+        cursor.execute(sql)
+        connect.commit()
+        # 关闭连接
+        cursor.close()
+        connect.close()
+
     def export(self):
-        table_list = ["FPS", "GPU", "CPU", "MEM"]
+        table_list = ["FPS", "GPU", "CPU", "MEM", "NET"]
         workbook = xlwt.Workbook()
         for t in table_list:
             connect = self.db_connect()
