@@ -1,49 +1,73 @@
 """
-@Date    : 2021-09-07
-@Author  : liyachao
+@Author  : liyanbo
 
-modified by liyanbo at 20210927
 """
 # -*- coding: UTF-8 -*-
 import datetime
 import time
 import argparse
-import tidevice
+import threading
+from utils import tidevice
 from grafana import Grafana
 from mysql import Mysql
-from ios_device import py_ios_device
-from tidevice._proto import MODELS
-from tidevice._perf import DataType
+from utils.tidevice._usbmux import Usbmux
+from utils.tidevice._proto import MODELS
+from utils.tidevice._perf import DataType
+from ios_device.servers.Instrument import InstrumentServer
 
 
-def callback_fps(res):
-    print('FPS打印', res)
-    # fps数据
-    ss = str(res)
-    fps_test = ss.split("'FPS':")[1].split(".")[0]
-    jank_test = ss.split("'jank':")[1].split(",")[0]
-    big_jank = ss.split("'big_jank':")[1].split(",")[0]
-    stutter = ss.split("'stutter':")[1][0:5].split("}")[0]
-    # 数据存数据库连接数据库
-    mysql.insert_fps(fps_test, jank_test, big_jank, stutter)
+def get_energy(rpc, pid):
+    rpc._start()
+    channel = "com.apple.xcode.debug-gauge-data-providers.Energy"
+    attr = {}
+    print("start", rpc.call(channel, "startSamplingForPIDs:", {pid}).selector)
+    while True:
+        ret = rpc.call(channel, "sampleAttributes:forPIDs:", attr, {pid})
+        # print(ret.selector)
+        if 'energy.gpu.cost' in ret.selector[pid].keys():
+            print("gpu:", ret.selector[pid]['energy.gpu.cost'])
+            gpu_cost = ret.selector[pid]['energy.gpu.cost']
+        else:
+            gpu_cost = '0'
+
+        if 'energy.cpu.cost' in ret.selector[pid].keys():
+            print("cpu:", ret.selector[pid]['energy.cpu.cost'])
+            cpu_cost = ret.selector[pid]['energy.cpu.cost']
+        else:
+            cpu_cost = '0'
+
+        if 'energy.networking.cost' in ret.selector[pid].keys():
+            print("networking:", ret.selector[pid]['energy.networking.cost'])
+            network_cost = ret.selector[pid]['energy.networking.cost']
+        else:
+            network_cost = '0'
+
+        mysql.insert_eng(gpu_cost, cpu_cost, network_cost)
+        time.sleep(1)
 
 
-def callback_gpu(res):
-    print('GPU打印', res)
-    # gpu数据
-    ss = str(res)  # 转数据类型
-    gpu_Device = ss.split("'Device Utilization %':")[1].split(",")[0]
-    gpu_Renderer = ss.split("'Renderer Utilization %':")[1].split(",")[0]
-    gpu_Tiler = ss.split("'Tiler Utilization %':")[1].split(",")[0]
-    # 数据存数据库连接数据库
-    mysql.insert_gpu(gpu_Device, gpu_Renderer, gpu_Tiler)
+def get_temp(td):
+    while True:
+        io_power = (td.get_io_power())
+        diagnostics = io_power['Diagnostics']
+        io_registry = diagnostics['IORegistry']
+        temperature = io_registry['Temperature']
+        temp_float = str(float(temperature) / 100)
+        print("temp:", temp_float)
+        mysql.insert_temp(temp_float)
+        time.sleep(5)
 
 
 def start_test():
-    channel = py_ios_device.start_get_gpu(callback=callback_gpu)
-    channel2 = py_ios_device.start_get_fps(callback=callback_fps)
     t = tidevice.Device(device_id)  # iOS设备
-    perf = tidevice.Performance(t, [DataType.CPU, DataType.MEMORY, DataType.NETWORK])
+    pid = t.app_start(app_bundle_id)
+    rpc = InstrumentServer().init()
+
+    t_energy = threading.Thread(target=get_energy, args=(rpc, pid))
+    t_temp = threading.Thread(target=get_temp, args=[t])
+
+    perf = tidevice.Performance(t, [DataType.CPU, DataType.MEMORY, DataType.NETWORK, DataType.FPS, DataType.PAGE,
+                                    DataType.GPU, DataType.SCREENSHOT])
 
     def callback(_type: tidevice.DataType, value: dict):
         print(_type, value)
@@ -64,6 +88,17 @@ def start_test():
             downFlow = value['downFlow']
             upFlow = value['upFlow']
             mysql.insert_net(upFlow, downFlow)
+        if _type.value == "fps":
+            print('tidevice.fps打印', value)
+            fps = value['fps']
+            mysql.insert_fps(fps)
+        if _type.value == "gpu":
+            print('GPU', value)
+            device = value['device']
+            renderer = value['renderer']
+            tiler = value['tiler']
+            mysql.insert_gpu(device, renderer, tiler)
+
     try:
         perf.start(app_bundle_id, callback=callback)
     except BaseException as ssl_error:
@@ -71,12 +106,10 @@ def start_test():
         time.sleep(5)
         perf.start(app_bundle_id, callback=callback)
 
+    t_temp.start()
+    t_energy.start()
     time.sleep(99999)  # 测试时长
     perf.stop()
-    py_ios_device.stop_get_gpu(channel)
-    py_ios_device.stop_get_fps(channel2)
-    channel.stop()
-    channel2.stop()
 
 
 def get_device_info(name):
@@ -102,9 +135,9 @@ if __name__ == "__main__":
     # 参数处理部分
     parser = argparse.ArgumentParser()
     parser.add_argument("--udid", type=str, required=False, default="")
-    parser.add_argument("--bundleid", type=str, required=False, default="com.apple.Preferences")
-    parser.add_argument("--grafana_host", type=str, required=False, default="localhost")
-    parser.add_argument("--mysql_host", type=str, required=False, default="localhost")
+    parser.add_argument("--bundleid", type=str, required=False, default="com.insta360.oner")
+    parser.add_argument("--grafana_host", type=str, required=False, default="10.0.43.163")
+    parser.add_argument("--mysql_host", type=str, required=False, default="10.0.43.163")
     # parser.add_argument("--grafana_host", type=str, required=False, default="localhost")
     # parser.add_argument("--mysql_host", type=str, required=False, default="localhost")
     parser.add_argument("--grafana_port", type=str, required=False, default="30000")
@@ -137,6 +170,12 @@ if __name__ == "__main__":
     export = args.export
 
     # 运行代码
+    if not device_id:
+        um = Usbmux()
+        for d in um.device_list():
+            if d.conn_type == ' USB':
+                device_id = d.udid
+
     if not export:
         tidevice_obj = tidevice.Device(device_id)  # iOS设备
 

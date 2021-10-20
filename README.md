@@ -2,9 +2,13 @@
 
 这是一款iOS性能监控工具，支持Mac以及Windows端运行，电脑通过USB连接手机后运行脚本即可。
 
+当前支持获取的性能数据包括GPU、CPU、内存、FPS、功耗、温度，并将根据需求继续新增。
+
 本项目基于jlintxia开源的iOS测试方案修改而来，增加动态建表，动态增加grafana面板以及docker打包环境等特性。其中iOS性能数据来源于开源工具tidevice和py-ios-device。
 
 
+注意：本项目依赖MySQL进行性能数据存储，Grafana进行数据动态展示，也就是说需要在本机或者可达的网络（比如公司局域网）
+上搭建MySQL+Grafana服务，我提供了一份docker-compose.yml文件，可以使用docker快速搭建一套环境。
 
 
 
@@ -82,10 +86,10 @@
 `python run.py --udid=00008101-00XXXXXXXXXX \`
 
  `
---bundleid=com.apple.Preferences \`
+--bundleid=com.insta360.oner \`
 
  `
---grafana_host=localhost \`
+--grafana_host=10.0.43.163 \`
 
  `
 --grafana_port=30000 \`
@@ -97,7 +101,7 @@
 --grafana_password=admin \`
 
  `
---mysql_host=localhost \`
+--mysql_host=10.0.43.163 \`
 
  `
 --mysql_port=33306 \`
@@ -127,7 +131,7 @@
 
 #### 建议修改参数
 
->- --bundleid：待测APP的包名，通过`ideviceinstaller -l`获取，默认值为`com.apple.Preferences`
+>- --bundleid：待测APP的包名，通过`ideviceinstaller -l`获取，默认值为`com.insta360.oner`
 >- --udid iPhone：手机的唯一标识符，通过 `idevice_id -l` 获取，客户端只连接一台手机时不用写
 
   
@@ -136,7 +140,7 @@
 
 #### Grafana可选参数
 
-> - --grafana_host：Grafana的主机地址，只写ip，不用写Scheme，也就是`http://`或者`https//`，默认值localhost
+> - --grafana_host：Grafana的主机地址，只写ip，不用写Scheme，也就是`http://`或者`https//`，默认值10.0.43.163
 > - --grafana_port：Grafana的端口号，默认值30000
 > - --grafana_user：Grafana的用户名，默认值admin
 > - --grafana_password：Grafana的密码，默认值admin
@@ -147,7 +151,7 @@
 
 #### MySQL可选参数
 
-> - --mysql_host：MySQL的主机地址，不用写Scheme，也就是`http://`或者`https//`，默认值localhost
+> - --mysql_host：MySQL的主机地址，不用写Scheme，也就是`http://`或者`https//`，默认值10.0.43.163
 > - --mysql_port：MySQL的端口号，默认值33306
 > - --mysql_user：MySQL的用户名，默认值root
 > - --mysql_password：MySQL的用户名，默认值admin
@@ -163,7 +167,7 @@
 `python mysql.py --runid=iphone6_1008_1532 \`
 
  `
---mysql_host=localhost \`
+--mysql_host=10.0.43.163 \`
 
  `
 --mysql_port=33306 \`

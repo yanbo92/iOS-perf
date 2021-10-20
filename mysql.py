@@ -35,6 +35,11 @@ class Mysql:
             # 获取游标
             cursor = connect.cursor()
             cursor.execute("use {};".format(self.mysql_db))
+            cursor.execute("CREATE TABLE TEMP (temp VARCHAR(255), runid  VARCHAR(255), "
+                           "time  timestamp)")
+            cursor.execute("CREATE TABLE ENG (gpu_cost VARCHAR(255), cpu_cost VARCHAR(255), network_cost VARCHAR(255), "
+                           "runid  VARCHAR(255), time timestamp)")
+
             cursor.execute("CREATE TABLE FPS (fps VARCHAR(255), jank VARCHAR(255), big_jank  VARCHAR(255), "
                            "stutter  VARCHAR(255),runid  VARCHAR(255),  time timestamp)")
             cursor.execute("CREATE TABLE GPU (gpu_Device VARCHAR(255), gpu_Renderer VARCHAR(255), "
@@ -46,6 +51,7 @@ class Mysql:
                            "time  timestamp)")
             cursor.execute("CREATE TABLE NET (upflow VARCHAR(255), downflow VARCHAR(255), runid  VARCHAR(255), "
                            "time  timestamp)")
+
             time.sleep(3)
             connect.commit()
             # 关闭连接
@@ -78,9 +84,10 @@ class Mysql:
         cursor.close()
         connect.close()
 
-    def insert_fps(self, fps, jank, big_jank, stutter):
-        fps_sql_prefix = "INSERT INTO FPS (fps,jank,big_jank,stutter,runid) VALUES('"
-        sql = fps_sql_prefix + fps + "','" + jank + "','" + big_jank + "','" + stutter + "','" + self.run_id + "')"
+    def insert_fps(self, fps):
+        # fps, jank, big_jank, stutter
+        fps_sql_prefix = "INSERT INTO FPS (fps,runid) VALUES('"
+        sql = fps_sql_prefix + str(fps) + "','" + self.run_id + "')"
         connect = self.db_connect()
         cursor = connect.cursor()
         cursor.execute(sql)
@@ -91,7 +98,8 @@ class Mysql:
 
     def insert_gpu(self, gpu_device, gpu_renderer, gpu_tiler):
         gpu_sql_prefix = "INSERT INTO GPU (gpu_Device,gpu_Renderer,gpu_Tiler,runid) VALUES('"
-        sql = gpu_sql_prefix + gpu_device + "','" + gpu_renderer + "','" + gpu_tiler + "','" + self.run_id + "')"
+        sql = gpu_sql_prefix + str(gpu_device) + "','" + str(gpu_renderer) + "','" + str(gpu_tiler) + \
+              "','" + self.run_id + "')"
         connect = self.db_connect()
         cursor = connect.cursor()
         cursor.execute(sql)
@@ -111,8 +119,31 @@ class Mysql:
         cursor.close()
         connect.close()
 
+    def insert_temp(self, temp):
+        tmp_sql_prefix = "INSERT INTO TEMP (temp,runid) VALUES('"
+        sql = tmp_sql_prefix + str(temp) + "','" + self.run_id + "')"
+        connect = self.db_connect()
+        cursor = connect.cursor()
+        cursor.execute(sql)
+        connect.commit()
+        # 关闭连接
+        cursor.close()
+        connect.close()
+
+    def insert_eng(self, gpu_cost, cpu_cost, network_cost):
+        eng_sql_prefix = "INSERT INTO ENG (gpu_cost,cpu_cost,network_cost,runid) VALUES('"
+        sql = eng_sql_prefix + str(gpu_cost) + "','" + str(cpu_cost) + "','" + str(network_cost) + "','" + \
+              self.run_id + "')"
+        connect = self.db_connect()
+        cursor = connect.cursor()
+        cursor.execute(sql)
+        connect.commit()
+        # 关闭连接
+        cursor.close()
+        connect.close()
+
     def export(self):
-        table_list = ["FPS", "GPU", "CPU", "MEM", "NET"]
+        table_list = ["FPS", "GPU", "CPU", "MEM", "NET", "ENG", "TEMP"]
         workbook = xlwt.Workbook()
         for t in table_list:
             connect = self.db_connect()
@@ -151,7 +182,7 @@ class Mysql:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--mysql_host", type=str, required=False, default="localhost")
+    parser.add_argument("--mysql_host", type=str, required=False, default="10.0.43.163")
     parser.add_argument("--mysql_port", type=str, required=False, default="33306")
     parser.add_argument("--mysql_username", type=str, required=False, default="root")
     parser.add_argument("--mysql_password", type=str, required=False, default="admin")
