@@ -86,10 +86,10 @@
 `python run.py --udid=00008101-00XXXXXXXXXX \`
 
  `
---bundleid=com.insta360.oner \`
+--bundleid=com.apple.Preferences \`
 
  `
---grafana_host=10.0.43.163 \`
+--grafana_host=localhost \`
 
  `
 --grafana_port=30000 \`
@@ -101,7 +101,7 @@
 --grafana_password=admin \`
 
  `
---mysql_host=10.0.43.163 \`
+--mysql_host=localhost \`
 
  `
 --mysql_port=33306 \`
@@ -131,7 +131,7 @@
 
 #### 建议修改参数
 
->- --bundleid：待测APP的包名，通过`ideviceinstaller -l`获取，默认值为`com.insta360.oner`
+>- --bundleid：待测APP的包名，通过`ideviceinstaller -l`获取，默认值为`com.apple.Preferences`
 >- --udid iPhone：手机的唯一标识符，通过 `idevice_id -l` 获取，客户端只连接一台手机时不用写
 
   
@@ -140,7 +140,7 @@
 
 #### Grafana可选参数
 
-> - --grafana_host：Grafana的主机地址，只写ip，不用写Scheme，也就是`http://`或者`https//`，默认值10.0.43.163
+> - --grafana_host：Grafana的主机地址，只写ip，不用写Scheme，也就是`http://`或者`https//`，默认值localhost
 > - --grafana_port：Grafana的端口号，默认值30000
 > - --grafana_user：Grafana的用户名，默认值admin
 > - --grafana_password：Grafana的密码，默认值admin
@@ -151,7 +151,7 @@
 
 #### MySQL可选参数
 
-> - --mysql_host：MySQL的主机地址，不用写Scheme，也就是`http://`或者`https//`，默认值10.0.43.163
+> - --mysql_host：MySQL的主机地址，不用写Scheme，也就是`http://`或者`https//`，默认值localhost
 > - --mysql_port：MySQL的端口号，默认值33306
 > - --mysql_user：MySQL的用户名，默认值root
 > - --mysql_password：MySQL的用户名，默认值admin
@@ -167,7 +167,7 @@
 `python mysql.py --runid=iphone6_1008_1532 \`
 
  `
---mysql_host=10.0.43.163 \`
+--mysql_host=localhost \`
 
  `
 --mysql_port=33306 \`
