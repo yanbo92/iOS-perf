@@ -1,8 +1,8 @@
+# -*- coding: UTF-8 -*-
 """
 @Author  : liyanbo
 
 """
-# -*- coding: UTF-8 -*-
 import datetime
 import time
 import argparse
