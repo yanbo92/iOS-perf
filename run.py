@@ -7,12 +7,12 @@ import datetime
 import time
 import argparse
 import threading
-from utils import tidevice
 from grafana import Grafana
 from mysql import Mysql
-from utils.tidevice._usbmux import Usbmux
-from utils.tidevice._proto import MODELS
-from utils.tidevice._perf import DataType
+import tidevice
+from tidevice._usbmux import Usbmux
+from tidevice._proto import MODELS
+from tidevice._perf import DataType
 from ios_device.servers.Instrument import InstrumentServer
 
 

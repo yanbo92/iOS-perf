@@ -7,8 +7,8 @@ import webbrowser
 import jsonpath
 import requests
 
-from utils import tidevice
-from utils.tidevice._proto import MODELS
+import tidevice
+from tidevice._proto import MODELS
 
 
 class Grafana:
