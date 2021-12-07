@@ -34,19 +34,14 @@
 
 >https://www.python.org/downloads/
 
-  
-
-
-
-
-
-
 
 ### 服务端搭建
 
 命令行运行
 
-`docker -v && docker-compose -v`
+```
+docker -v && docker-compose -v
+```
 
 如果能正常输出版本，如下，则表示docker环境正常，可以继续
 
@@ -56,22 +51,20 @@
 
 拉取镜像并启动服务：
 
-`docker-compose up -d  `
-
+```
+docker-compose up -d  
+```
+**提示：初次打开`Grafana`时，系统会提示你修改密码，为了方便建议不修改，即保持账号密码均为`admin`，否则在python运行指令中将要进行对应的传参。**
   
-
-
-
-
-
 
 
 ### 本地环境搭建
 
 命令行执行
 
-`pip install -r requirements.txt`
-
+```
+pip install -r requirements.txt
+```
 
 
   
@@ -82,47 +75,19 @@
 
 ## 运行命令
 命令行执行：
-
-`python run.py --udid=00008101-00XXXXXXXXXX \`
-
- `
---bundleid=com.apple.Preferences \`
-
- `
---grafana_host=localhost \`
-
- `
---grafana_port=30000 \`
-
- `
---grafana_user=admin \`
-
- `
---grafana_password=admin \`
-
- `
---mysql_host=localhost \`
-
- `
---mysql_port=33306 \`
-
- `
---mysql_username=root \`
-
- `
---mysql_password=admin \`
-
- `
---mysql_db=iOSPerformance `
-
-
-
-
-
-  
-
-
-
+```shell
+python run.py --udid=00008110-001A4D483CF2801E \
+--bundleid=com.apple.Preferences \
+--grafana_host=localhost \
+--grafana_port=30000 \
+--grafana_user=admin \
+--grafana_password=admin \
+--mysql_host=localhost \
+--mysql_port=33306 \
+--mysql_username=root \
+--mysql_password=admin \
+--mysql_db=iOSPerformance
+```
 
 
 ### 运行参数说明
@@ -134,8 +99,6 @@
 >- --bundleid：待测APP的包名，通过`ideviceinstaller -l`获取，默认值为`com.apple.Preferences`
 >- --udid iPhone：手机的唯一标识符，通过 `idevice_id -l` 获取，客户端只连接一台手机时不用写
 
-  
-
 
 
 #### Grafana可选参数
@@ -144,8 +107,6 @@
 > - --grafana_port：Grafana的端口号，默认值30000
 > - --grafana_user：Grafana的用户名，默认值admin
 > - --grafana_password：Grafana的密码，默认值admin
-
-  
 
 
 
@@ -156,39 +117,18 @@
 > - --mysql_user：MySQL的用户名，默认值root
 > - --mysql_password：MySQL的用户名，默认值admin
 
-  
-
 
 
 ## 数据导出
 
 命令行执行：
-
-`python mysql.py --runid=iphone6_1008_1532 \`
-
- `
---mysql_host=localhost \`
-
- `
---mysql_port=33306 \`
-
- `
---mysql_username=root \`
-
- `
---mysql_password=admin \`
-
- `
---mysql_db=iOSPerformance `
-
-
-
-  
-
-
-
-
-
-
+```shell
+python mysql.py --runid=iphone6_1008_1532 \
+--mysql_host=localhost \
+--mysql_port=33306 \
+--mysql_username=root \
+--mysql_password=admin \
+--mysql_db=iOSPerformance
+```
 
 其中，`--runid`为必须参数，可以从显示测试数据的Grafana页面的左上角找到，通常为手机名称+月日+时分。其余Mysql参数均为可选参数，默认值与上方[MySQL可选参数](#MySQL可选参数)相同。
