@@ -60,7 +60,10 @@ def get_temp(td):
 
 def start_test():
     t = tidevice.Device(device_id)  # iOS设备
-    pid = t.app_start(app_bundle_id)
+    try:
+        pid = t.app_start(app_bundle_id)
+    except BaseException as e:
+        pid = get_pid(app_bundle_id)
     rpc = InstrumentServer().init()
 
     t_energy = threading.Thread(target=get_energy, args=(rpc, pid))
