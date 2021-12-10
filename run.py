@@ -59,6 +59,22 @@ def get_temp(td):
 
 
 def start_test():
+    
+    def get_pid(bid) -> int:
+        t = tidevice.Device(device_id)
+        app_infos = list(t.instruments.app_list())
+        for app in app_infos:
+            if app['CFBundleIdentifier'] == bid:
+                print('app',app)
+                plugin = [app]
+        if plugin.count == 1:
+            ps = t.instruments.app_process_list(plugin)
+            for p in ps:
+                pid = p['pid']
+            return pid
+
+        return None
+    
     t = tidevice.Device(device_id)  # iOS设备
     try:
         pid = t.app_start(app_bundle_id)
