@@ -2,7 +2,7 @@
 
 这是一款iOS性能监控工具，支持Mac以及Windows端运行，电脑通过USB连接手机后运行脚本即可。
 
-当前支持获取的性能数据包括GPU、CPU、内存、FPS、功耗、温度，并将根据需求继续新增。
+当前支持获取的性能数据包括GPU、CPU、内存、FPS、功耗、网络、温度，并将根据需求继续新增。
 
 本项目基于jlintxia开源的iOS测试方案修改而来，增加动态建表，动态增加grafana面板以及docker打包环境等特性。其中iOS性能数据来源于开源工具tidevice和py-ios-device。
 
