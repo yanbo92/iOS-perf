@@ -82,7 +82,7 @@ def start_test():
         pid = t.app_start(app_bundle_id)
     except BaseException as e:
         pid = get_pid(app_bundle_id)
-    rpc = InstrumentServer().init()
+    rpc = InstrumentServer(udid=device_id, network=True).init()
 
     t_energy = threading.Thread(target=get_energy, args=(rpc, pid))
     t_temp = threading.Thread(target=get_temp, args=[t])
