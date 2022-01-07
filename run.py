@@ -14,6 +14,7 @@ from tidevice._usbmux import Usbmux
 from tidevice._proto import MODELS
 from tidevice._perf import DataType
 from ios_device.servers.Instrument import InstrumentServer
+from ios_device import py_ios_device
 
 
 def get_energy(rpc, pid):
@@ -44,6 +45,20 @@ def get_energy(rpc, pid):
 
         mysql.insert_eng(gpu_cost, cpu_cost, network_cost)
         time.sleep(1)
+
+
+def get_fps(rpc):
+    def callback_fps(res):
+        print('FPS打印', res)
+        # fps数据
+        ss = str(res)
+        fps_test = ss.split("'FPS':")[1].split(".")[0]
+        jank_test = ss.split("'jank':")[1].split(",")[0]
+        big_jank = ss.split("'big_jank':")[1].split(",")[0]
+        stutter = ss.split("'stutter':")[1][0:5].split("}")[0]
+        mysql.insert_fps(fps_test, jank_test, big_jank, stutter)
+
+    py_ios_device.start_get_fps(rpc_channel=rpc, callback=callback_fps)
 
 
 def get_temp(td):
@@ -85,6 +100,7 @@ def start_test():
     rpc = InstrumentServer(udid=device_id, network=True).init()
 
     t_energy = threading.Thread(target=get_energy, args=(rpc, pid))
+    t_fps = threading.Thread(target=get_fps, args=[rpc])
     t_temp = threading.Thread(target=get_temp, args=[t])
 
     perf = tidevice.Performance(t, [DataType.CPU, DataType.MEMORY, DataType.NETWORK, DataType.FPS, DataType.PAGE,
@@ -109,10 +125,10 @@ def start_test():
             downFlow = value['downFlow']
             upFlow = value['upFlow']
             mysql.insert_net(upFlow, downFlow)
-        if _type.value == "fps":
-            print('tidevice.fps打印', value)
-            fps = value['fps']
-            mysql.insert_fps(fps)
+        # if _type.value == "fps":
+        #     print('tidevice.fps打印', value)
+        #     fps = value['fps']
+        #     mysql.insert_fps(fps)
         if _type.value == "gpu":
             print('GPU', value)
             device = value['device']
@@ -129,6 +145,7 @@ def start_test():
 
     t_temp.start()
     t_energy.start()
+    t_fps.start()
     time.sleep(99999)  # 测试时长
     perf.stop()
 

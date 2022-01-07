@@ -279,7 +279,23 @@ class Grafana:
                            {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
                             'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(fps) AS "FPS"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(self.run_id),
                             'refId': 'A', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
-                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]}], 'thresholds': [],
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(jank) AS "JANK"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(
+                                self.run_id),
+                            'refId': 'B', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(big_jank) AS "BIG_JANK"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(
+                                self.run_id),
+                            'refId': 'C', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
+                           {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': True,
+                            'rawSql': 'SELECT\n  $__timeGroupAlias(time,1s),\n  avg(stutter) AS "STUTTER"\nFROM FPS\nWHERE\n  $__timeFilter(time) AND\n  runid = \'{}\'\nGROUP BY 1\nORDER BY $__timeGroup(time,1s)'.format(
+                                self.run_id),
+                            'refId': 'D', 'select': [[{'params': ['value'], 'type': 'column'}]], 'timeColumn': 'time',
+                            'where': [{'name': '$__timeFilter', 'params': [], 'type': 'macro'}]},
+                       ], 'thresholds': [],
                         'timeFrom': None, 'timeRegions': [], 'timeShift': None, 'title': 'FPS',
                         'tooltip': {'shared': True, 'sort': 0, 'value_type': 'individual'}, 'type': 'graph',
                         'xaxis': {'buckets': None, 'mode': 'time', 'name': None, 'show': True, 'values': []}, 'yaxes': [

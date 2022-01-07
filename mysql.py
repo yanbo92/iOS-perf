@@ -84,10 +84,12 @@ class Mysql:
         cursor.close()
         connect.close()
 
-    def insert_fps(self, fps):
+    def insert_fps(self, fps, jank=0, big_jank=0, stutter=0):
         # fps, jank, big_jank, stutter
-        fps_sql_prefix = "INSERT INTO FPS (fps,runid) VALUES('"
-        sql = fps_sql_prefix + str(fps) + "','" + self.run_id + "')"
+        fps_sql_prefix = "INSERT INTO FPS (fps,jank,big_jank,stutter,runid) VALUES('"
+        sql = fps_sql_prefix + str(fps) + "','" + str(jank) + "','" + str(big_jank) + "','" + str(stutter) + "','" \
+              + self.run_id + "')"
+        print("**************fps:" +sql)
         connect = self.db_connect()
         cursor = connect.cursor()
         cursor.execute(sql)
