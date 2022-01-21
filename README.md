@@ -1,5 +1,7 @@
 # iOS-perf
 
+[READ IN ENGLISH](./README_EN.md)
+
 这是一款iOS性能监控工具，支持Mac以及Windows端运行，电脑通过USB连接手机后运行脚本即可。
 
 当前支持获取的性能数据包括GPU、CPU、内存、FPS、功耗、网络、温度，以及一系列手机硬件数据，并将根据需求继续新增。
@@ -55,7 +57,7 @@ docker -v && docker-compose -v
 docker-compose up -d  
 ```
 **提示：初次打开`Grafana`时，系统会提示你修改密码，为了方便建议不修改，即保持账号密码均为`admin`，否则在python运行指令中将要进行对应的传参。**
-  
+
 
 
 ### 本地环境搭建
@@ -67,7 +69,7 @@ pip install -r requirements.txt
 ```
 
 
-  
+
 
 
 
@@ -115,7 +117,7 @@ python run.py --udid=00008110-001A4D483CF2801E \
 > - --mysql_host：MySQL的主机地址，不用写Scheme，也就是`http://`或者`https//`，默认值localhost
 > - --mysql_port：MySQL的端口号，默认值33306
 > - --mysql_user：MySQL的用户名，默认值root
-> - --mysql_password：MySQL的用户名，默认值admin
+> - --mysql_password：MySQL的密码，默认值admin
 
 
 
