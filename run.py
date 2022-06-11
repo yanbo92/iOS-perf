@@ -223,7 +223,7 @@ if __name__ == "__main__":
         mysql = Mysql(mysql_host, mysql_port, mysql_username, mysql_password, mysql_db, run_id)
 
         grafana = Grafana(grafana_host, grafana_port, grafana_username, grafana_password, mysql_host, mysql_port,
-                          mysql_username, mysql_password, mysql_db, run_id, device_id)
+                          mysql_username, mysql_password, mysql_db, run_id, device_id, app_bundle_id)
         grafana.setup_dashboard()
         grafana.to_explorer()
 
