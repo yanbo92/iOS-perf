@@ -13,7 +13,7 @@ from tidevice._proto import MODELS
 
 class Grafana:
     def __init__(self, grafana_host, grafana_port, grafana_username, grafana_password, mysql_host, mysql_port,
-                 mysql_username, mysql_password, mysql_db, run_id, device_id):
+                 mysql_username, mysql_password, mysql_db, run_id, device_id, bundle_id):
         self.grafana_host = grafana_host
         self.mysql_host = mysql_host
         self.grafana_port = grafana_port
@@ -26,6 +26,7 @@ class Grafana:
         self.run_id = run_id
         self.device_id = device_id
         self.dashboard_url = "http://{}:{}".format(grafana_host, grafana_port)
+        self.bundle_id = bundle_id
         self.add_mysql_source()
 
     def get_device_info(self, name):
@@ -118,31 +119,27 @@ class Grafana:
                                    '    \n\nProductVersion:   {}\n\n'
                                    'ProductType:      {}\n\nModelNumber:      {}\n\nSerialNumber:     {}'
                                    '\n\nPhoneNumber:      {}\n\nCPUArchitecture:  {}\n\nProductName:      '
-                                   '{}\n\nProtocolVersion:  {}\n\nRegionInfo:       {}\n\nTimeIntervalSince1970: '
+                                   '{}\n\nProtocolVersion:  {}\n\nRegionInfo:       {}\n\nTimestamp: '
                                    '{}\n\nTimeZone:         {}\n\nUniqueDeviceID:   '
                                    '{}\n\nWiFiAddress:      {}\n\n'
-                                   'BluetoothAddress: {}\n\nBasebandVersion:  {}\n\n\n\n'.format(
+                                   'BluetoothAddress: {}\n\nBasebandVersion:  {}\n\nBundleID:  {}\n\n\n\n'.format(
                             self.get_device_info("MarketName"),
                             self.get_device_info("ProductVersion"),
                             self.get_device_info("ProductType"),
                             self.get_device_info("ModelNumber"),
                             self.get_device_info("SerialNumber"),
                             self.get_device_info("PhoneNumber"),
-                            self.get_device_info(
-                                "CPUArchitecture"),
+                            self.get_device_info("CPUArchitecture"),
                             self.get_device_info("ProductName"),
-                            self.get_device_info(
-                                "ProtocolVersion"),
+                            self.get_device_info("ProtocolVersion"),
                             self.get_device_info("RegionInfo"),
-                            self.get_device_info(
-                                "TimeIntervalSince1970"),
+                            self.get_device_info("TimeIntervalSince1970"),
                             self.get_device_info("TimeZone"),
                             self.get_device_info("UniqueDeviceID"),
                             self.get_device_info("WiFiAddress"),
-                            self.get_device_info(
-                                "BluetoothAddress"),
-                            self.get_device_info(
-                                "BasebandVersion")),
+                            self.get_device_info("BluetoothAddress"),
+                            self.get_device_info("BasebandVersion"),
+                            self.bundle_id),
                             'datasource': 'MySQL', 'gridPos': {'h': 19, 'w': 5, 'x': 0, 'y': 0}, 'id': 10, 'links': [],
                             'mode': 'markdown', 'pluginVersion': '6.7.4', 'targets': [
                 {'format': 'time_series', 'group': [], 'metricColumn': 'none', 'rawQuery': False,
