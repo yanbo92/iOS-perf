@@ -16,7 +16,7 @@
 
 ## 效果展示
 
-![](iOS-perf-3x.gif)
+![gif](iOS-perf-3x.gif)
 
   
 
